@@ -1,0 +1,31 @@
+{
+	"name": "v-mama",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"start": "astro dev",
+		"build": "astro check && astro build",
+		"preview": "wrangler pages dev ./dist",
+		"cf-types": "wrangler types",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@astrojs/check": "^0.7.0",
+		"@astrojs/cloudflare": "^10.2.6",
+		"@astrojs/tailwind": "^5.1.0",
+		"@repo/db": "workspace:*",
+		"@repo/env": "workspace:*",
+		"astro": "^4.9.2",
+		"clsx": "^2.1.1",
+		"drizzle-orm": "^0.31.0",
+		"franken-ui": "^0.0.12",
+		"htmx.org": "^1.9.12",
+		"tailwind-merge": "^2.3.0",
+		"tailwindcss": "^3.4.3",
+		"tailwindcss-animate": "^1.0.7",
+		"typed-htmx": "^0.3.1",
+		"typescript": "^5.4.5",
+		"uikit": "^3.21.5"
+	}
+}

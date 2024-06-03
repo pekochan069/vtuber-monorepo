@@ -1,0 +1,23 @@
+---
+import Layout from "~/layouts/Layout.astro";
+
+const runtime = Astro.locals.runtime;
+
+import { createDB } from "@repo/db";
+
+const db = createDB(runtime.env.DB);
+
+const res = await db.query.socialTypes.findMany();
+---
+
+<Layout>
+  <h1>Hello</h1>
+  {
+    res.map((r) => (
+      <div>
+        {r.name}
+        <img src={r.icon} />
+      </div>
+    ))
+  }
+</Layout>
