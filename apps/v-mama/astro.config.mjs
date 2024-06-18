@@ -1,25 +1,24 @@
 import { defineConfig } from "astro/config";
-import cloudflare from "@astrojs/cloudflare";
-
 import tailwind from "@astrojs/tailwind";
+import vercel from "@astrojs/vercel/serverless";
+import solidJs from "@astrojs/solid-js";
 
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  adapter: cloudflare({
-    imageService: "cloudflare",
-    platformProxy: {
-      enabled: true,
-    },
-  }),
+  adapter: vercel(),
   integrations: [
     tailwind({
       applyBaseStyles: false,
     }),
+    solidJs(),
   ],
   vite: {
     build: {
       minify: false,
     },
+  },
+  experimental: {
+    actions: true,
   },
 });

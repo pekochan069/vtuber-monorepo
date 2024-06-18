@@ -178,5 +178,4 @@ dist
 .turbo/
 dist/
 wrangler.toml
-drizzle/
 .wrangler/

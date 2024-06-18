@@ -1,4 +1,7 @@
 ---
+import { ViewTransitions } from "astro:transitions";
+
+import Navbar from "~/components/navbar/Navbar.astro";
 import "~/styles/global.css";
 
 type Props = {
@@ -14,16 +17,43 @@ const { title = "V-mama" } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
     <title>{title}</title>
   </head>
-  <body>
-    <slot />
-    <script src="~/scripts/htmx.js"></script>
-    <script>
-      // @ts-ignore
-      import * as UIKit from "uikit";
-      // @ts-ignore
-      import * as UIKitIcons from "uikit/dist/js/uikit-icons";
+  <body data-cloak>
+    <Navbar transition:name="navbar" />
+    <div class="mt-[69px]">
+      <slot />
+    </div>
+    <script is:inline>
+      document.addEventListener("astro:page-load", () => {
+        const getThemePreference = () => {
+          if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+            return localStorage.getItem("theme");
+          }
+          return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        };
+        const isDark = getThemePreference() === "dark";
+        document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+
+        if (typeof localStorage !== "undefined") {
+          const observer = new MutationObserver(() => {
+            const isDark = document.documentElement.classList.contains("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+          });
+          observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+        }
+
+        document
+          .querySelectorAll("[data-cloak]")
+          .forEach((el) => queueMicrotask(() => el.removeAttribute("data-cloak")));
+      });
+
+      document.addEventListener("astro:after-swap", () => {
+        localStorage.theme === "dark"
+          ? document.documentElement.classList.add("dark")
+          : document.documentElement.classList.remove("dark");
+      });
     </script>
   </body>
 </html>

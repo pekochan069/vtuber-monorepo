@@ -1,0 +1,14 @@
+{
+  "name": "@repo/utils",
+  "module": "./src/index.ts",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "nanoid": "^5.0.7"
+  }
+}

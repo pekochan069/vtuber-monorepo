@@ -1,6 +1,12 @@
-import { drizzle } from "drizzle-orm/d1";
-import * as schema from "./schema";
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
 
-export function createDB(db: D1Database) {
-  return drizzle(db, { schema });
-}
+import * as schema from "./schema";
+import { env } from "@repo/env/web";
+
+const client = createClient({
+  authToken: env.DATABASE_TOKEN,
+  url: env.DATABASE_URL,
+});
+
+export const db = drizzle(client, { schema });
