@@ -1,4 +1,3 @@
-import { cn } from "~/libs/cn";
 import type {
   DatePickerContentProps,
   DatePickerInputProps,
@@ -18,6 +17,8 @@ import type { VoidProps } from "solid-js";
 import { splitProps } from "solid-js";
 import { Portal } from "solid-js/web";
 import { buttonVariants } from "./button";
+
+import { cn } from "~/lib/utils";
 
 export const DatePickerLabel = DatePickerPrimitive.Label;
 export const DatePickerTableHead = DatePickerPrimitive.TableHead;

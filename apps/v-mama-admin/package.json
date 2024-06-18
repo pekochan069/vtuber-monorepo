@@ -1,14 +1,6 @@
 {
   "name": "v-mama-admin",
-  "type": "module",
   "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
   "dependencies": {
     "@repo/db": "workspace:*",
     "@repo/auth": "workspace:*",
@@ -22,7 +14,12 @@
     "tailwindcss": "^3.4.4",
     "typescript": "^5.4.5"
   },
-  "devDependencies": {
-    "vercel": "^34.2.7"
-  }
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "type": "module"
 }

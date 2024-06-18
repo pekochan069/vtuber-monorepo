@@ -1,7 +1,8 @@
-import { cn } from "~/libs/cn";
 import * as ImagePrimitive from "@kobalte/core/image";
 import type { PolymorphicProps } from "@kobalte/core/polymorphic";
 import { type ValidComponent, splitProps } from "solid-js";
+
+import { cn } from "~/lib/utils";
 
 type ImageRootProps = ImagePrimitive.ImageRootProps & { class?: string };
 

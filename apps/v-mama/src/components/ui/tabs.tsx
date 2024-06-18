@@ -1,8 +1,9 @@
-import { cn } from "~/libs/cn";
 import type { PolymorphicProps } from "@kobalte/core/polymorphic";
 import * as TabsPrimitive from "@kobalte/core/tabs";
 import type { ValidComponent, VoidProps } from "solid-js";
 import { splitProps } from "solid-js";
+
+import { cn } from "~/lib/utils";
 
 type TabsProps = TabsPrimitive.TabsRootProps & {
   class?: string;

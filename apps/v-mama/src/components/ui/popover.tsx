@@ -1,4 +1,3 @@
-import { cn } from "~/libs/cn";
 import type { PolymorphicProps } from "@kobalte/core/polymorphic";
 import * as PopoverPrimitive from "@kobalte/core/popover";
 import {
@@ -7,6 +6,8 @@ import {
   mergeProps,
   splitProps,
 } from "solid-js";
+
+import { cn } from "~/lib/utils";
 
 export const PopoverTrigger = PopoverPrimitive.Trigger;
 export const PopoverTitle = PopoverPrimitive.Title;

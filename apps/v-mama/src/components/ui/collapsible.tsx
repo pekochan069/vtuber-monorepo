@@ -1,7 +1,8 @@
-import { cn } from "~/libs/cn";
 import * as CollapsiblePrimitive from "@kobalte/core/collapsible";
 import type { PolymorphicProps } from "@kobalte/core/polymorphic";
 import { type ValidComponent, splitProps } from "solid-js";
+
+import { cn } from "~/lib/utils";
 
 export const Collapsible = CollapsiblePrimitive.Root;
 
