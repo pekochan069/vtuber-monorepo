@@ -106,7 +106,6 @@ export const DropdownMenuItemLabel = <T extends ValidComponent = "div">(
     <DropdownMenuPrimitive.ItemLabel
       as="div"
       class={cn("px-2 py-1.5 text-sm font-semibold", local.class)}
-      {...rest}
     />
   );
 };

@@ -273,6 +273,7 @@ function InputField(props: {
   });
 
   createEffect(() => {
+    // @ts-ignore
     debounced()?.clear();
 
     if (props.value.length < 1) {
@@ -290,7 +291,10 @@ function InputField(props: {
   });
 
   createEffect(() => {
-    if (autocomplete() && autocomplete().length > 0) {
+    if (!autocomplete()) return;
+
+    // @ts-ignore
+    if (autocomplete().length > 0) {
       setShowAutocomplete(true);
     }
   });
@@ -308,6 +312,7 @@ function InputField(props: {
           id={props.name}
           // onBlur={props.onBlur}
           onFocusIn={() => {
+            // @ts-ignore
             if (autocomplete() && autocomplete().length > 0) {
               setShowAutocomplete(true);
             }

@@ -91,12 +91,14 @@ export const Button = <T extends ValidComponent = "button">(
     >
       <Show when={local.Icon && local.iconPlacement === "left"}>
         <div class="group-hover:translate-x-100 w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:pr-2 group-hover:opacity-100">
+          {/* @ts-ignore */}
           <local.Icon />
         </div>
       </Show>
       {props.children}
       <Show when={local.Icon && local.iconPlacement === "right"}>
         <div class="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100">
+          {/* @ts-ignore */}
           <local.Icon />
         </div>
       </Show>
