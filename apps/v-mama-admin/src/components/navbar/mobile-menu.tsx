@@ -6,7 +6,7 @@ import { actions } from "astro:actions";
 import { createEffect, Show } from "solid-js";
 
 export function MobileMenu(props: {
-  role: "admin" | "user";
+  role: "admin" | "user" | undefined;
   loggedIn: boolean;
 }) {
   createEffect(() => {

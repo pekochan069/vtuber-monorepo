@@ -35,7 +35,7 @@ import { MobileMenu } from "./mobile-menu";
       </div>
     </div>
     <div class="md:invisible md:hidden">
-      <MobileMenu loggedIn={user !== null} role={user!.role as "admin" | "user"} client:load />
+      <MobileMenu loggedIn={user !== null} role={user?.role as "admin" | "user" | undefined} client:load />
     </div>
   </div>
 </header>
