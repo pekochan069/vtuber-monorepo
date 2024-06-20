@@ -1,19 +1,6 @@
 {
   "name": "v-mama-admin",
   "version": "0.0.1",
-  "dependencies": {
-    "@repo/db": "workspace:*",
-    "@repo/auth": "workspace:*",
-    "@repo/utils": "workspace:*",
-    "@astrojs/check": "^0.7.0",
-    "@astrojs/solid-js": "^4.4.0",
-    "@astrojs/tailwind": "^5.1.0",
-    "@astrojs/vercel": "^7.7.1",
-    "astro": "^4.10.3",
-    "solid-js": "^1.8.17",
-    "tailwindcss": "^3.4.4",
-    "typescript": "^5.4.5"
-  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -21,5 +8,32 @@
     "preview": "astro preview",
     "astro": "astro"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@ark-ui/solid": "^3.3.0",
+    "@astrojs/check": "^0.7.0",
+    "@astrojs/solid-js": "^4.4.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@astrojs/vercel": "^7.7.1",
+    "@corvu/drawer": "^0.2.1",
+    "@kobalte/core": "^0.13.3",
+    "@repo/auth": "workspace:*",
+    "@repo/db": "workspace:*",
+    "@repo/env": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "@tanstack/solid-form": "^0.21.0",
+    "@tanstack/zod-form-adapter": "^0.22.0",
+    "@total-typescript/ts-reset": "^0.5.1",
+    "astro": "^4.10.3",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "solid-icons": "^1.1.0",
+    "solid-js": "^1.8.17",
+    "solid-sonner": "^0.2.8",
+    "solid-spinner": "^0.2.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss": "^3.4.4",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.4.5"
+  }
 }

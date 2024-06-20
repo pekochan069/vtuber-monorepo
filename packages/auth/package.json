@@ -1,14 +1,17 @@
 {
-  "name": "@repo/auth",
-  "module": "./src/index.ts",
-  "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "dependencies": {
-    "@lucia-auth/adapter-drizzle": "^1.0.7",
-    "@repo/db": "workspace:*",
-    "arctic": "^1.9.1",
-    "lucia": "^3.2.0"
-  }
+	"name": "@repo/auth",
+	"module": "./src/index.ts",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./argon2": "./src/argon2.ts",
+		"./lucia": "./src/lucia.ts",
+		"./v-mama-admin": "./src/v-mama-admin.ts"
+	},
+	"dependencies": {
+		"@lucia-auth/adapter-drizzle": "^1.0.7",
+		"@repo/db": "workspace:*",
+		"arctic": "^1.9.1",
+		"lucia": "^3.2.0"
+	}
 }

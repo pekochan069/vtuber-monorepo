@@ -1,0 +1,56 @@
+---
+const user = Astro.locals.user;
+
+import { DashboardButton } from "./dashboard-button";
+import { Button } from "../ui/button";
+import { ThemeToggle } from "./theme-toggle";
+import { MobileMenu } from "./mobile-menu";
+---
+
+<header class="fixed left-0 top-0 z-50 w-full border-b backdrop-blur-lg">
+  <div class="container mx-auto flex justify-between px-6 py-4">
+    <nav>
+      <a class="text-2xl font-bold" href="/">V-mama/<span class="text-primary">Admin</span></a>
+    </nav>
+    <div>
+      <div class="invisible hidden items-center gap-4 md:visible md:flex">
+        {
+          user && user.role === "admin" && (
+            <Button as="a" href="/create-user" variant="ghost">
+              Create User
+            </Button>
+          )
+        }
+        {
+          user && (
+            <Fragment>
+              <Button variant="ghost" class="logout-button">
+                Logout
+              </Button>
+              <DashboardButton />
+            </Fragment>
+          )
+        }
+        <ThemeToggle client:load />
+      </div>
+    </div>
+    <div class="md:invisible md:hidden">
+      <MobileMenu loggedIn={user !== null} role={user!.role as "admin" | "user"} client:load />
+    </div>
+  </div>
+</header>
+<script>
+  import { actions } from "astro:actions";
+
+  document.querySelectorAll(".logout-button")?.forEach((e) =>
+    e.addEventListener("click", async () => {
+      const response = await actions.authLogout();
+
+      if (response.ok) {
+        window.location.href = "/";
+      }
+
+      console.error("Failed to logout");
+    })
+  );
+</script>

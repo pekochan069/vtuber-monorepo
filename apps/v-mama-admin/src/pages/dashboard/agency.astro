@@ -1,0 +1,11 @@
+---
+const user = Astro.locals.user;
+
+if (!user) {
+  return Astro.redirect("/");
+}
+
+import DashboardLayout from "~/layouts/DashboardLayout.astro";
+---
+
+<DashboardLayout> hello </DashboardLayout>

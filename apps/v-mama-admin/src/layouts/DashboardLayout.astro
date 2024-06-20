@@ -1,0 +1,16 @@
+---
+import Layout from "./Layout.astro";
+import { DashboardTabs } from "~/components/dashboard/tabs";
+---
+
+<Layout>
+  <main class="xl-p-8 p-4 md:p-6">
+    <div class="flex justify-between">
+      <h1 class="text-2xl font-bold">Dashboard</h1>
+      <div>
+        <DashboardTabs client:load />
+      </div>
+    </div>
+    <slot />
+  </main>
+</Layout>

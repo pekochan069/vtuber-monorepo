@@ -11,6 +11,7 @@ export const env = createEnv({
     DATABASE_TOKEN: z.string().min(1),
   },
   client: {},
-  runtimeEnv: process.env,
+  // @ts-ignore vite runtime env
+  runtimeEnv: import.meta.env,
   clientPrefix: "PUBLIC_",
 });

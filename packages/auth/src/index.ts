@@ -1,1 +1,1 @@
-export * from "./lucia";
+export * from "./v-mama-admin";
