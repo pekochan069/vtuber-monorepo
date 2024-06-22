@@ -45,3 +45,18 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## environment variables
+
+```text
+DATABASE_URL=
+DATABASE_ID=
+DATABASE_TOKEN=
+R2_TOKEN=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_S3_ENDPOINT=
+R2_ACCOUNT_ID=
+R2_BUCKET_NAME=
+R2_PUBLIC_URL=
+```

@@ -31,3 +31,17 @@ export const createSocialType = defineAction({
     };
   },
 });
+
+export const getSocialTypes = defineAction({
+  handler: async () => {
+    const res = await db
+      .select({
+        id: socialTypes.id,
+        name: socialTypes.name,
+        icon: socialTypes.icon,
+      })
+      .from(socialTypes);
+
+    return res;
+  },
+});

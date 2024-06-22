@@ -90,7 +90,8 @@ export const socials = vtuberBuilder("socials", {
   typeId: text("type_id")
     .notNull()
     .references(() => socialTypes.id),
-  handle: text("url").notNull(),
+  handle: text("handle").notNull(),
+  name: text("name"),
 });
 
 export type Vtuber = typeof vtubers.$inferSelect;

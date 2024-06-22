@@ -10,6 +10,7 @@ import {
   Suspense,
   Switch,
   batch,
+  createEffect,
   createResource,
   createSignal,
   onMount,
@@ -63,6 +64,8 @@ import { actions } from "astro:actions";
 import { Spinner, SpinnerType } from "solid-spinner";
 import { prepareImages } from "~/lib/image";
 import { ImageUploadDialog } from "../image-uploader";
+import { createStore } from "solid-js/store";
+import { Table, TableHeader } from "~/components/ui/table";
 
 const LOGO_SIZES = [512, 256, 128, 64];
 const prepareAgencyIcon = (file: File | null) =>
@@ -93,7 +96,6 @@ export function CreateAgencyForm() {
     },
     validatorAdapter: zodValidator(),
   }));
-  const [isDesktop, setIsDesktop] = createSignal(false);
   const [image, setImage] = createSignal<Blob>();
   const [baseUrl, setBaseUrl] = createSignal<string>("");
   const [usePlaceholder, setUsePlaceholder] = createSignal(false);
@@ -101,9 +103,14 @@ export function CreateAgencyForm() {
     "idle",
   );
 
-  onMount(() => {
-    setIsDesktop(window.innerWidth >= 768);
-  });
+  const [socialTypes] = createResource(actions.socialGetAllTypes);
+  const [socials, setSocials] = createStore<
+    {
+      typeId: string;
+      handle: string;
+      name: string;
+    }[]
+  >([]);
 
   return (
     <form
@@ -662,6 +669,11 @@ export function CreateAgencyForm() {
             </div>
           )}
         </form.Field>
+        <div>
+          <Table>
+            <TableHeader></TableHeader>
+          </Table>
+        </div>
         <div class="mt-6">
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
