@@ -10,7 +10,6 @@ import {
   Suspense,
   Switch,
   batch,
-  createEffect,
   createResource,
   createSignal,
   onMount,
@@ -62,6 +61,9 @@ import {
 } from "~/components/ui/drawer";
 import { actions } from "astro:actions";
 import { Spinner, SpinnerType } from "solid-spinner";
+import { prepareImages } from "~/lib/image";
+
+const LOGO_SIZES = [512, 256, 128, 64];
 
 export function CreateAgencyForm() {
   const form = createForm(() => ({
@@ -80,7 +82,7 @@ export function CreateAgencyForm() {
     onSubmit: async ({ value }) => {
       const res = await actions.agencyCreate(value);
 
-      if (res.ok) {
+      if (res.status === 201) {
         setStatus("success");
       } else {
         setStatus("failed");
@@ -424,7 +426,7 @@ export function CreateAgencyForm() {
         <form.Field
           name="icon"
           validators={{
-            onChange: z.string().url("Invalid URL").min(1, "Icon is required"),
+            onChange: z.string().min(1, "Icon is required"),
           }}
         >
           {(field) => (
@@ -451,9 +453,7 @@ export function CreateAgencyForm() {
                   onChange={(value) => {
                     batch(() => {
                       if (value === true) {
-                        field().handleChange(
-                          "https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/placeholder-128.png",
-                        );
+                        field().handleChange("placeholder");
                       } else {
                         field().handleChange(baseUrl());
                       }
@@ -739,11 +739,14 @@ function MobileUploader(props: {
   );
 }
 
+const prepareAgencyIcon = (file: File | null) =>
+  prepareImages(file, LOGO_SIZES[0], LOGO_SIZES);
+
 function ImageUploader(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
 }) {
   const [file, setFile] = createSignal<File | null>(null);
-  const [images] = createResource(file, prepareImages);
+  const [images] = createResource(file, prepareAgencyIcon);
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async (files) => {
       setIsDropping(false);
@@ -819,9 +822,24 @@ function ImageUploader(props: {
           onClick={() => {
             const temp = images();
             if (temp === undefined) return;
+
+            const upload = [] as {
+              size: number;
+              width: number;
+              type: string;
+            }[];
+
+            for (let i = 0; i < temp.length; i++) {
+              upload.push({
+                size: temp[i].size,
+                width: LOGO_SIZES[i],
+                type: temp[i].type,
+              });
+            }
+
             setIsUploading(true);
             actions
-              .agencyHandleLogoUpload({ images: temp })
+              .agencyHandleLogoUpload({ images: upload })
               .then(async (res) => {
                 const promises = res.presignedUrls.map((presignedUrl) =>
                   fetch(presignedUrl, {
@@ -834,7 +852,7 @@ function ImageUploader(props: {
                 );
                 await Promise.all(promises);
                 // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                props.onUpload(images()![1], res.baseUrl);
+                props.onUpload(images()![1], res.id);
                 setIsUploading(false);
               })
               .catch((err) => {
@@ -849,65 +867,4 @@ function ImageUploader(props: {
       </div>
     </div>
   );
-}
-
-function prepareImages(file: File | null): Promise<Blob[]> {
-  if (!file) {
-    return Promise.reject("No file provided");
-  }
-
-  const reader = new FileReader();
-  const canvas = document.createElement("canvas");
-
-  function resize(img: HTMLImageElement, target: number) {
-    canvas.width = target;
-    canvas.height = target;
-    canvas.getContext("2d")?.drawImage(img, 0, 0, target, target);
-    const data = canvas.toDataURL("image/png");
-
-    const bytes = atob(data.split(",")[1]);
-    const mime = data.split(",")[0].split(":")[1].split(";")[0];
-    const ia = new Uint8Array(bytes.length).map((_, i) => bytes.charCodeAt(i));
-
-    return new Blob([ia], { type: mime });
-  }
-
-  reader.readAsDataURL(file);
-
-  let width = 0;
-  let height = 0;
-
-  return new Promise((resolve, reject) => {
-    if (!file.type.match(/image.*/)) {
-      reject("Not an image file");
-      return;
-    }
-
-    reader.onload = (e) => {
-      const img = new Image();
-      img.src = e.target?.result as string;
-
-      img.onload = () => {
-        width = img.width;
-        height = img.height;
-
-        if (width !== height) {
-          reject("Image must be square");
-        }
-
-        if (width < 512) {
-          reject("Image must be at least 512x512");
-        }
-
-        const images = [
-          resize(img, 512),
-          resize(img, 256),
-          resize(img, 128),
-          resize(img, 64),
-        ];
-
-        resolve(images);
-      };
-    };
-  });
 }

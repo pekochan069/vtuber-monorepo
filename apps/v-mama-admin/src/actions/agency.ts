@@ -1,12 +1,9 @@
-import { agencies, type AgencyInsert } from "@repo/db/schema";
+import { agencies } from "@repo/db/schema";
 import { defineAction, z } from "astro:actions";
 
 import { db } from "@repo/db";
-import { generateId, nanoid } from "@repo/utils/id";
-import { R2 } from "@repo/r2/admin";
-import { PutObjectCommand } from "@repo/r2/client-s3";
-import { getSignedUrl } from "@repo/r2/s3-request-presigner";
-import { env } from "@repo/env/admin";
+import { generateId } from "@repo/utils/id";
+import { handleImageUpload } from "./image-upload-handle";
 
 export const createAgency = defineAction({
   input: z.object({
@@ -19,23 +16,20 @@ export const createAgency = defineAction({
     createdAt: z.string(),
     defunct: z.boolean().default(false),
     defunctAt: z.optional(z.string()),
-    icon: z.string().url(),
+    icon: z.string(),
   }),
-  handler: async (
-    {
-      name,
-      jp,
-      en,
-      kr,
-      description,
-      website,
-      createdAt,
-      defunct,
-      defunctAt,
-      icon,
-    },
-    context,
-  ) => {
+  handler: async ({
+    name,
+    jp,
+    en,
+    kr,
+    description,
+    website,
+    createdAt,
+    defunct,
+    defunctAt,
+    icon,
+  }) => {
     // convert yyyy-mm-dd to Date
     const createdDate = new Date(createdAt);
     const defunctDate = defunctAt ? new Date(defunctAt) : undefined;
@@ -66,33 +60,19 @@ export const createAgency = defineAction({
 
 export const handleLogoUpload = defineAction({
   input: z.object({
-    images: z.array(z.any()).length(4),
+    images: z
+      .array(
+        z.object({
+          size: z.number(),
+          width: z.number(),
+          type: z.string().refine((t) => t.startsWith("image/")),
+        }),
+      )
+      .length(4),
   }),
-  handler: async ({ images }, context) => {
-    const presignedUrls = [] as string[];
-    const base = `agency/${nanoid()}`;
+  handler: async ({ images }) => {
+    const res = await handleImageUpload(images, "agency");
 
-    let i = 1;
-    for (const image of images) {
-      const width = 512 / i;
-      i *= 2;
-      const key = `${base}-${width}`;
-
-      const cmd = new PutObjectCommand({
-        Bucket: env.R2_BUCKET_NAME,
-        Key: key,
-        ContentLength: image.size,
-        ContentType: image.type,
-      });
-
-      const presignedUrl = await getSignedUrl(R2, cmd, { expiresIn: 60 * 60 });
-
-      presignedUrls.push(presignedUrl);
-    }
-
-    return {
-      baseUrl: `${env.R2_S3_ENDPOINT}/${base}`,
-      presignedUrls,
-    };
+    return res;
   },
 });
