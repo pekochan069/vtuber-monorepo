@@ -1,6 +1,6 @@
 import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { FieldInfo } from "components/field-info";
+import { FieldInfo } from "~/components/field-info";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import { Spinner, SpinnerType } from "solid-spinner";
 import { actions } from "astro:actions";
@@ -9,12 +9,6 @@ import { z } from "zod";
 import type { CreateUserTags } from "~/actions/auth";
 import { TextField, TextFieldLabel, TextFieldRoot } from "../ui/textfield";
 import { Button } from "../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import {
   RadioGroup,
   RadioGroupItem,

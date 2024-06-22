@@ -6,7 +6,9 @@ export function FieldInfo(props: { field: FieldApi<any, any, any, any> }) {
   return (
     <>
       <Show when={props.field.state.meta.touchedErrors}>
-        <em>{props.field.state.meta.touchedErrors}</em>
+        <em class="text-destructive text-sm">
+          {props.field.state.meta.touchedErrors}
+        </em>
       </Show>
       <Show when={props.field.state.meta.isValidating}>
         <span>Validating...</span>

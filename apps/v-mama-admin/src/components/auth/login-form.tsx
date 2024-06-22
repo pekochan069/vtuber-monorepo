@@ -3,11 +3,15 @@ import { createSignal, Match, Show, Switch } from "solid-js";
 import { Spinner, SpinnerType } from "solid-spinner";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-
-import { TextField, TextFieldLabel, TextFieldRoot } from "../ui/textfield";
-import { FieldInfo } from "../field-info";
-import { Button } from "../ui/button";
 import { actions } from "astro:actions";
+
+import {
+  TextField,
+  TextFieldLabel,
+  TextFieldRoot,
+} from "~/components/ui/textfield";
+import { FieldInfo } from "~/components/field-info";
+import { Button } from "~/components/ui/button";
 import type { LoginTags } from "~/actions/auth";
 
 export function LoginForm() {

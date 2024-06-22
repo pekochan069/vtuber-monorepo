@@ -1,23 +1,22 @@
 {
-	"name": "@repo/db",
-	"private": "true",
-	"module": "./src/index.ts",
-	"type": "module",
-	"scripts": {
-		"db:push": "drizzle-kit push",
-		"db:studio": "drizzle-kit studio"
-	},
-	"exports": {
-		".": "./src/index.ts",
-		"./schema": "./src/schema/index.ts",
-		"./schema/v-mama-admin": "./src/schema/v-mama-admin.ts"
-	},
-	"dependencies": {
-		"@repo/env": "workspace:*",
-		"@libsql/client": "^0.6.2",
-		"drizzle-orm": "^0.31.0"
-	},
-	"devDependencies": {
-		"drizzle-kit": "^0.22.1"
-	}
+  "name": "@repo/db",
+  "module": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./schema/v-mama-admin": "./src/schema/v-mama-admin.ts"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.6.2",
+    "@repo/env": "workspace:*",
+    "drizzle-orm": "^0.31.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.22.7"
+  }
 }

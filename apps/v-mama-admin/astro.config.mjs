@@ -18,7 +18,10 @@ export default defineConfig({
   },
   vite: {
     optimizeDeps: {
-      exclude: ["@node-rs/argon2-wasm32-wasi"],
+      exclude: [
+        "@node-rs/argon2-wasm32-wasi",
+        "@node-rs/argon2-win32-x64-msvc",
+      ],
     },
   },
   experimental: {

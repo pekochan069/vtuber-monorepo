@@ -58,8 +58,8 @@ export const agencies = vtuberBuilder("agencies", {
   description: text("description"),
   website: text("website"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
-  removed: integer("removed", { mode: "boolean" }).default(false),
-  removedAt: integer("removed_at", { mode: "timestamp" }),
+  defunct: integer("defunct", { mode: "boolean" }).default(false),
+  defunctAt: integer("defunct_at", { mode: "timestamp" }),
   icon: text("icon").notNull(),
 });
 

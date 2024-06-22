@@ -1,18 +1,15 @@
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import { Button } from "../ui/button";
 import { TbLogout, TbMenu } from "solid-icons/tb";
-import { ThemeToggle } from "./theme-toggle";
 import { actions } from "astro:actions";
 import { createEffect, Show } from "solid-js";
+
+import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
+import { Button } from "~/components/ui/button";
+import { ThemeToggle } from "./theme-toggle";
 
 export function MobileMenu(props: {
   role: "admin" | "user" | undefined;
   loggedIn: boolean;
 }) {
-  createEffect(() => {
-    console.log(props.role);
-    console.log(props.loggedIn);
-  });
   return (
     <Sheet>
       <SheetTrigger as={Button} variant="ghost" size="icon">

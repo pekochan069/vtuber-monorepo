@@ -1,5 +1,4 @@
 import { lucia } from "@repo/auth/v-mama-admin";
-import { verifyRequestOrigin } from "@repo/auth/lucia";
 import { defineMiddleware } from "astro:middleware";
 
 export const onRequest = defineMiddleware(async (context, next) => {

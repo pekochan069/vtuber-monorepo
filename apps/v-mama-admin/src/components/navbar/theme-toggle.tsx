@@ -1,11 +1,12 @@
+import { TbDeviceDesktop, TbMoon, TbSun } from "solid-icons/tb";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { TbDeviceDesktop, TbMoon, TbSun } from "solid-icons/tb";
+} from "~/components/ui/dropdown-menu";
+import { Button } from "~/components/ui/button";
 
 export function ThemeToggle() {
   return (

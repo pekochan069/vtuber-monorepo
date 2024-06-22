@@ -6,7 +6,7 @@ import {
   vmamaAdminSessions,
   vmamaAdminUsers,
 } from "@repo/db/schema/v-mama-admin";
-import { env } from "@repo/env/v-mama-admin";
+import { env } from "@repo/env/admin";
 
 const adapter = new DrizzleSQLiteAdapter(
   db,

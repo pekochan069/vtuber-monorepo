@@ -1,4 +1,4 @@
-# @repo/db
+# @repo/r2
 
 To install dependencies:
 
