@@ -5,6 +5,7 @@ import { PutObjectCommand } from "@repo/r2/client-s3";
 import { env } from "@repo/env/admin";
 import { getSignedUrl } from "@repo/r2/s3-request-presigner";
 import { R2 } from "@repo/r2/admin";
+import { createSocialType } from "./social";
 
 export const server = {
   authCreateUser: createUser,
@@ -12,4 +13,5 @@ export const server = {
   authLogout: logout,
   agencyCreate: createAgency,
   agencyHandleLogoUpload: handleLogoUpload,
+  socialCreateType: createSocialType,
 };

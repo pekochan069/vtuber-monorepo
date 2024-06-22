@@ -6,6 +6,20 @@ if (!user) {
 }
 
 import DashboardLayout from "~/layouts/DashboardLayout.astro";
+import { CreateSocialTypeForm } from "~/components/dashboard/social/create-social-type-form";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "~/components/ui/card";
 ---
 
-<DashboardLayout> hello </DashboardLayout>
+<DashboardLayout>
+  <div class="mt-8 grid gap-4 md:gap-6 lg:grid-cols-2 2xl:grid-cols-3">
+    <Card class="w-full">
+      <CardHeader>
+        <CardTitle class="text-2xl">Create new Social Type</CardTitle>
+        <CardDescription class="text-sm">Youtube, X, twitch, etc.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <CreateSocialTypeForm client:only="solid-js" />
+      </CardContent>
+    </Card>
+  </div>
+</DashboardLayout>
