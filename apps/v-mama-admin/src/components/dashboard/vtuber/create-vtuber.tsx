@@ -1,16 +1,13 @@
-import { createForm, Field } from "@tanstack/solid-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
-import { z } from "zod";
-import { Index, Match, Show, Switch, batch, createSignal } from "solid-js";
+import { createForm } from "@tanstack/solid-form";
+import { TextArea } from "@kobalte/core/text-field";
+import { z, actions } from "astro:actions";
+import { batch, createResource, createSignal, Index, Match, Show, Switch } from "solid-js";
+import { createStore } from "solid-js/store";
 
+import { ImageUploadDialog } from "../image-uploader";
+import { CreateSocial } from "../social/create-social";
+import type { SocialType } from "@repo/db/schema";
 import { FieldInfo } from "~/components/field-info";
-import { Button } from "~/components/ui/button";
-import { TextArea } from "~/components/ui/textarea";
-import {
-  TextField,
-  TextFieldLabel,
-  TextFieldRoot,
-} from "~/components/ui/textfield";
 import {
   DatePicker,
   DatePickerContent,
@@ -28,20 +25,22 @@ import {
   DatePickerViewControl,
   DatePickerViewTrigger,
 } from "~/components/ui/date-picker";
+import { Button } from "~/components/ui/button";
+import { Spinner, SpinnerType } from "solid-spinner";
 import {
   Checkbox,
   CheckboxControl,
   CheckboxLabel,
 } from "~/components/ui/checkbox";
-import { actions } from "astro:actions";
-import { Spinner, SpinnerType } from "solid-spinner";
+import {
+  TextField,
+  TextFieldLabel,
+  TextFieldRoot,
+} from "~/components/ui/textfield";
 import { prepareLogo } from "~/lib/image";
-import { ImageUploadDialog } from "../image-uploader";
-import { createStore } from "solid-js/store";
-import type { SocialType } from "@repo/db/schema";
-import { CreateSocial } from "../social/create-social";
+import { zodValidator } from "@tanstack/zod-form-adapter";
 
-export function CreateAgencyForm() {
+export function CreateVtuberForm() {
   const form = createForm(() => ({
     defaultValues: {
       name: "",
@@ -49,39 +48,23 @@ export function CreateAgencyForm() {
       en: "",
       kr: "",
       description: "",
+      debut: new Date().toISOString().split("T")[0],
+      retired: false,
+      retireDate: new Date().toISOString().split("T")[0],
+      gender: "",
+      birthday: new Date().toISOString().split("T")[0],
       website: "",
-      createdAt: new Date().toISOString().split("T")[0],
-      defunct: false,
-      defunctAt: new Date().toISOString().split("T")[0],
       icon: "",
+      agencyId: "",
     },
     onSubmit: async ({ value }) => {
-      const transformedSocials = socials.map((social) => ({
-        type: social.type.id,
-        handle: social.handle,
-        name: social.name === "" ? social.type.name : social.name,
-      }));
-
-      const res = await actions.agencyCreate({
-        ...value,
-        socialList: transformedSocials,
-      });
-
-      if (res.ok) {
-        setStatus("success");
-      } else {
-        setStatus("failed");
-      }
+      console.log(value);
     },
     validatorAdapter: zodValidator(),
   }));
   const [image, setImage] = createSignal<Blob>();
   const [baseUrl, setBaseUrl] = createSignal<string>("");
-  const [usePlaceholder, setUsePlaceholder] = createSignal(false);
-  const [status, setStatus] = createSignal<"idle" | "success" | "failed">(
-    "idle",
-  );
-
+  const [usePlaceholder, setUsePlaceholder] = createSignal<boolean>(true);
   const [socials, setSocials] = createStore(
     [] as {
       type: SocialType;
@@ -89,6 +72,12 @@ export function CreateAgencyForm() {
       name: string;
     }[],
   );
+
+  const [status, setStatus] = createSignal<"idle" | "success" | "failed">(
+    "idle",
+  );
+
+  const [agencies] = createResource(actions.get)
 
   return (
     <form
@@ -219,6 +208,25 @@ export function CreateAgencyForm() {
             </div>
           )}
         </form.Field>
+        <form.Field name="gender">
+          {(field) => (
+            <div>
+              <TextFieldRoot
+                value={field().state.value}
+                onChange={(value) => field().handleChange(value)}
+              >
+                <TextField
+                  onBlur={field().handleBlur}
+                  name={field().name}
+                  id={field().name}
+                  type="text"
+                />
+              </TextFieldRoot>
+              <FieldInfo field={field()} />
+            </div>
+          )}
+        </form.Field>
+        <form.Field name="birthday">{(field) => <div>asd</div>}</form.Field>
         <form.Field name="description">
           {(field) => (
             <div>
@@ -258,7 +266,7 @@ export function CreateAgencyForm() {
             </div>
           )}
         </form.Field>
-        <form.Field name="createdAt">
+        <form.Field name="debut">
           {(field) => (
             <div>
               <div class="space-y-1">
@@ -493,7 +501,7 @@ export function CreateAgencyForm() {
         <div>
           <CreateSocial socials={socials} onChange={setSocials} />
         </div>
-        <form.Field name="defunct">
+        <form.Field name="retired">
           {(field) => (
             <Checkbox
               class="mt-4 flex items-center"
@@ -507,11 +515,11 @@ export function CreateAgencyForm() {
             </Checkbox>
           )}
         </form.Field>
-        <form.Field name="defunctAt">
+        <form.Field name="retireDate">
           {(field) => (
             <div
               class="hidden data-[show=true]:block"
-              data-show={form.getFieldValue("defunct").valueOf()}
+              data-show={form.getFieldValue("retired").valueOf()}
             >
               <div class="space-y-1">
                 <label class="text-sm font-medium" for={field().name}>

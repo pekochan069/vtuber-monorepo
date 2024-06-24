@@ -19,7 +19,7 @@ export const vtubers = vtuberBuilder(
     description: text("description"),
     debut: integer("debut", { mode: "timestamp" }).notNull(),
     retired: integer("retired", { mode: "boolean" }).default(false),
-    retire_date: integer("retire_date", { mode: "timestamp" }),
+    retireDate: integer("retire_date", { mode: "timestamp" }),
     gender: text("gender"),
     birthday: integer("birthday", { mode: "timestamp" }),
     website: text("website"),

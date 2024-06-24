@@ -1,5 +1,5 @@
 import { db } from "@repo/db";
-import { socialTypes } from "@repo/db/schema";
+import { socials, socialTypes } from "@repo/db/schema";
 import { generateId } from "@repo/utils/id";
 import { defineAction, z } from "astro:actions";
 
@@ -34,13 +34,7 @@ export const createSocialType = defineAction({
 
 export const getSocialTypes = defineAction({
   handler: async () => {
-    const res = await db
-      .select({
-        id: socialTypes.id,
-        name: socialTypes.name,
-        icon: socialTypes.icon,
-      })
-      .from(socialTypes);
+    const res = await db.select().from(socialTypes);
 
     return res;
   },

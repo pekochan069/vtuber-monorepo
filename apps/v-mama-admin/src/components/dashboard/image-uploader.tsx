@@ -29,11 +29,13 @@ import {
 
 export function ImageUploadDialog(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImages: (file: File) => Promise<Blob[]>;
-  uploadHandler: (
-    images: { size: number; type: string; width: number }[],
-  ) => Promise<{ id: string; presignedUrls: string[] }>;
-  widths: number[];
+  prepareImage: (file: File) => Promise<Blob>;
+  uploadHandler: (image: {
+    size: number;
+    type: string;
+    width: number;
+  }) => Promise<{ id: string; presignedUrl: string }>;
+  width: number;
 }) {
   const [isDesktop, setIsDesktop] = createSignal(false);
 
@@ -55,11 +57,13 @@ export function ImageUploadDialog(props: {
 
 function DesktopUploader(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImages: (file: File) => Promise<Blob[]>;
-  uploadHandler: (
-    images: { size: number; type: string; width: number }[],
-  ) => Promise<{ id: string; presignedUrls: string[] }>;
-  widths: number[];
+  prepareImage: (file: File) => Promise<Blob>;
+  uploadHandler: (image: {
+    size: number;
+    type: string;
+    width: number;
+  }) => Promise<{ id: string; presignedUrl: string }>;
+  width: number;
 }) {
   const [open, setOpen] = createSignal(false);
   return (
@@ -77,9 +81,9 @@ function DesktopUploader(props: {
               props.onUpload(image, baseUrl);
               setOpen(false);
             }}
-            prepareImage={props.prepareImages}
+            prepareImage={props.prepareImage}
             uploadHandler={props.uploadHandler}
-            widths={props.widths}
+            width={props.width}
           />
         </div>
       </DialogContent>
@@ -89,11 +93,13 @@ function DesktopUploader(props: {
 
 function MobileUploader(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImages: (file: File) => Promise<Blob[]>;
-  uploadHandler: (
-    images: { size: number; type: string; width: number }[],
-  ) => Promise<{ id: string; presignedUrls: string[] }>;
-  widths: number[];
+  prepareImage: (file: File) => Promise<Blob>;
+  uploadHandler: (image: {
+    size: number;
+    type: string;
+    width: number;
+  }) => Promise<{ id: string; presignedUrl: string }>;
+  width: number;
 }) {
   const [open, setOpen] = createSignal(false);
   return (
@@ -112,9 +118,9 @@ function MobileUploader(props: {
                 props.onUpload(image, baseUrl);
                 setOpen(false);
               }}
-              prepareImage={props.prepareImages}
+              prepareImage={props.prepareImage}
               uploadHandler={props.uploadHandler}
-              widths={props.widths}
+              width={props.width}
             />
           </div>
         </div>
@@ -125,14 +131,16 @@ function MobileUploader(props: {
 
 function ImageUploader(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImage: (file: File) => Promise<Blob[]>;
-  uploadHandler: (
-    images: { size: number; type: string; width: number }[],
-  ) => Promise<{ id: string; presignedUrls: string[] }>;
-  widths: number[];
+  prepareImage: (file: File) => Promise<Blob>;
+  uploadHandler: (image: {
+    size: number;
+    type: string;
+    width: number;
+  }) => Promise<{ id: string; presignedUrl: string }>;
+  width: number;
 }) {
   const [file, setFile] = createSignal<File | null>(null);
-  const [images] = createResource(file, props.prepareImage);
+  const [image] = createResource(file, props.prepareImage);
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async (files) => {
       setIsDropping(false);
@@ -177,24 +185,18 @@ function ImageUploader(props: {
         <div class="mt-6 flex min-h-32 justify-center">
           <Suspense>
             <Switch>
-              <Match when={images.error}>
-                <div class="text-destructive">
-                  Error: {images.error.message}
-                </div>
+              <Match when={image.error}>
+                <div class="text-destructive">Error: {image.error.message}</div>
               </Match>
-              <Match when={images()}>
+              <Match when={image()}>
                 <div class="flex items-end justify-center gap-6">
-                  <For each={images()}>
-                    {(image, i) => (
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt={`uploaded ${i}`}
-                        class="rounded-md object-cover shadow-md"
-                        width={128 / (i() + 1)}
-                        height={128 / (i() + 1)}
-                      />
-                    )}
-                  </For>
+                  <img
+                    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                    src={URL.createObjectURL(image()!)}
+                    alt="uploaded"
+                    class="rounded-md object-cover shadow-md"
+                    height={128}
+                  />
                 </div>
               </Match>
             </Switch>
@@ -206,39 +208,28 @@ function ImageUploader(props: {
           disabled={isUploading()}
           class="w-full"
           onClick={() => {
-            const temp = images();
+            const temp = image();
             if (temp === undefined) return;
 
-            const upload = [] as {
-              size: number;
-              width: number;
-              type: string;
-            }[];
-
-            for (let i = 0; i < temp.length; i++) {
-              upload.push({
-                size: temp[i].size,
-                width: props.widths[i],
-                type: temp[i].type,
-              });
-            }
+            const upload = {
+              size: temp.size,
+              width: props.width,
+              type: temp.type,
+            };
 
             setIsUploading(true);
             props
               .uploadHandler(upload)
               .then(async (res) => {
-                const promises = res.presignedUrls.map((presignedUrl) =>
-                  fetch(presignedUrl, {
-                    method: "PUT",
-                    headers: {
-                      "Content-Type": "image/png",
-                    },
-                    body: temp[res.presignedUrls.indexOf(presignedUrl)],
-                  }),
-                );
-                await Promise.all(promises);
+                await fetch(res.presignedUrl, {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "image/png",
+                  },
+                  body: temp,
+                });
                 // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                props.onUpload(images()![1], res.id);
+                props.onUpload(image()!, res.id);
                 setIsUploading(false);
               })
               .catch((err) => {

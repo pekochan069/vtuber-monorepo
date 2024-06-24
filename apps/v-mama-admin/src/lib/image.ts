@@ -57,3 +57,48 @@ export function prepareImages(
     };
   });
 }
+
+export function prepareLogo(file: File, height: number): Promise<Blob> {
+  const reader = new FileReader();
+  const canvas = document.createElement("canvas");
+
+  function resize(
+    img: HTMLImageElement,
+    targetWidth: number,
+    targetHeight: number,
+  ) {
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    canvas.getContext("2d")?.drawImage(img, 0, 0, targetWidth, targetHeight);
+    const data = canvas.toDataURL("image/png");
+
+    const bytes = atob(data.split(",")[1]);
+    const mime = data.split(",")[0].split(":")[1].split(";")[0];
+    const ia = new Uint8Array(bytes.length).map((_, i) => bytes.charCodeAt(i));
+
+    return new Blob([ia], { type: mime });
+  }
+
+  reader.readAsDataURL(file);
+
+  return new Promise((resolve, reject) => {
+    if (!file.type.match(/image.*/)) {
+      reject("Not an image file");
+      return;
+    }
+
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target?.result as string;
+
+      img.onload = () => {
+        // change width with respect to height
+        const width = (height / img.height) * img.width;
+
+        const logo = resize(img, width, height);
+
+        resolve(logo);
+      };
+    };
+  });
+}
