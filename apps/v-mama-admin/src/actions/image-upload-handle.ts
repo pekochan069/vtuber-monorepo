@@ -8,7 +8,6 @@ export async function handleImageUpload(
   image: {
     size: number;
     type: string;
-    width: number;
   },
   prefix: string,
 ) {

@@ -58,7 +58,7 @@ export function prepareImages(
   });
 }
 
-export function prepareLogo(file: File, height: number): Promise<Blob> {
+export function prepareLogo(file: File, maxHeight: number): Promise<Blob> {
   const reader = new FileReader();
   const canvas = document.createElement("canvas");
 
@@ -93,9 +93,10 @@ export function prepareLogo(file: File, height: number): Promise<Blob> {
 
       img.onload = () => {
         // change width with respect to height
+        const height = img.height > maxHeight ? maxHeight : img.height;
         const width = (height / img.height) * img.width;
 
-        const logo = resize(img, width, height);
+        const logo = resize(img, width, maxHeight);
 
         resolve(logo);
       };

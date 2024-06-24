@@ -1,6 +1,7 @@
 import { createUser, login, logout } from "./auth";
-import { createAgency, handleLogoUpload } from "./agency";
+import { createAgency, getAllAgency, handleLogoUpload } from "./agency";
 import { createSocialType, getSocialTypes } from "./social";
+import { createVtuber } from "./vtuber";
 
 export const server = {
   authCreateUser: createUser,
@@ -8,6 +9,8 @@ export const server = {
   authLogout: logout,
   agencyCreate: createAgency,
   agencyHandleLogoUpload: handleLogoUpload,
+  agencyGetAll: getAllAgency,
   socialCreateType: createSocialType,
   socialGetAllTypes: getSocialTypes,
+  vtuberCreate: createVtuber,
 };

@@ -47,9 +47,7 @@ export const createAgency = defineAction({
     }));
 
     try {
-      console.log(2);
       await db.transaction(async (tx) => {
-        console.log(3);
         await tx.insert(agencies).values({
           id,
           name,
@@ -63,9 +61,7 @@ export const createAgency = defineAction({
           defunctAt: defunctDate,
           icon,
         });
-        console.log(4);
         await tx.insert(socials).values(socialUpload);
-        console.log(5);
         await tx.insert(agencySocials).values(
           socialUpload.map((s) => ({
             agencyId: id,
@@ -89,7 +85,6 @@ export const handleLogoUpload = defineAction({
   input: z.object({
     image: z.object({
       size: z.number(),
-      width: z.number(),
       type: z.string().refine((t) => t.startsWith("image/")),
     }),
   }),
@@ -100,10 +95,10 @@ export const handleLogoUpload = defineAction({
   },
 });
 
-export const getAll = defineAction({
+export const getAllAgency = defineAction({
   handler: async () => {
     try {
-      return await db.query.agencies.findMany();
+      return await db.select().from(agencies);
     } catch {
       return [] as Agency[];
     }

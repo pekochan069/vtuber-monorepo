@@ -33,9 +33,8 @@ export function ImageUploadDialog(props: {
   uploadHandler: (image: {
     size: number;
     type: string;
-    width: number;
   }) => Promise<{ id: string; presignedUrl: string }>;
-  width: number;
+  maxHeight: number;
 }) {
   const [isDesktop, setIsDesktop] = createSignal(false);
 
@@ -61,19 +60,18 @@ function DesktopUploader(props: {
   uploadHandler: (image: {
     size: number;
     type: string;
-    width: number;
   }) => Promise<{ id: string; presignedUrl: string }>;
-  width: number;
+  maxHeight: number;
 }) {
   const [open, setOpen] = createSignal(false);
   return (
     <Dialog open={open()} onOpenChange={setOpen}>
       <DialogTrigger as={Button} variant="secondary" class="w-full">
-        Upload Logo
+        이미지 업로드
       </DialogTrigger>
       <DialogContent class="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Upload Image</DialogTitle>
+          <DialogTitle>이미지 업로드</DialogTitle>
         </DialogHeader>
         <div class="py-4">
           <ImageUploader
@@ -83,7 +81,7 @@ function DesktopUploader(props: {
             }}
             prepareImage={props.prepareImage}
             uploadHandler={props.uploadHandler}
-            width={props.width}
+            maxHeight={props.maxHeight}
           />
         </div>
       </DialogContent>
@@ -97,20 +95,19 @@ function MobileUploader(props: {
   uploadHandler: (image: {
     size: number;
     type: string;
-    width: number;
   }) => Promise<{ id: string; presignedUrl: string }>;
-  width: number;
+  maxHeight: number;
 }) {
   const [open, setOpen] = createSignal(false);
   return (
     <Drawer open={open()} onOpenChange={setOpen}>
       <DrawerTrigger as={Button} variant="secondary" class="w-full">
-        Upload Logo
+        이미지 업로드
       </DrawerTrigger>
       <DrawerContent>
         <div class="mx-auto h-[60svh] w-full max-w-3xl">
           <DrawerHeader>
-            <DrawerLabel>Upload Image</DrawerLabel>
+            <DrawerLabel>이미지 업로드</DrawerLabel>
           </DrawerHeader>
           <div class="py-4">
             <ImageUploader
@@ -120,7 +117,7 @@ function MobileUploader(props: {
               }}
               prepareImage={props.prepareImage}
               uploadHandler={props.uploadHandler}
-              width={props.width}
+              maxHeight={props.maxHeight}
             />
           </div>
         </div>
@@ -135,9 +132,8 @@ function ImageUploader(props: {
   uploadHandler: (image: {
     size: number;
     type: string;
-    width: number;
   }) => Promise<{ id: string; presignedUrl: string }>;
-  width: number;
+  maxHeight: number;
 }) {
   const [file, setFile] = createSignal<File | null>(null);
   const [image] = createResource(file, props.prepareImage);
@@ -164,9 +160,9 @@ function ImageUploader(props: {
         class="border-foreground/50 data-[dropping=true]:border-primary flex h-32 flex-col items-center justify-center gap-3 rounded-md border-2 border-dashed"
         data-dropping={isDropping()}
       >
-        <span>Drop image here</span>
+        <span>이미지를 여기에 놓으세요</span>
         <Button as="label" type="file">
-          Or click this
+          아니면 여기를 클릭하세요
           <input
             type="file"
             class="hidden"
@@ -181,12 +177,12 @@ function ImageUploader(props: {
         </Button>
       </div>
       <div class="mt-4">
-        <h3 class="text-lg font-semibold">Logo</h3>
+        <h3 class="text-lg font-semibold">이미지</h3>
         <div class="mt-6 flex min-h-32 justify-center">
           <Suspense>
             <Switch>
               <Match when={image.error}>
-                <div class="text-destructive">Error: {image.error.message}</div>
+                <div class="text-destructive">에러: {image.error.message}</div>
               </Match>
               <Match when={image()}>
                 <div class="flex items-end justify-center gap-6">
@@ -213,7 +209,7 @@ function ImageUploader(props: {
 
             const upload = {
               size: temp.size,
-              width: props.width,
+              maxHeight: props.maxHeight,
               type: temp.type,
             };
 

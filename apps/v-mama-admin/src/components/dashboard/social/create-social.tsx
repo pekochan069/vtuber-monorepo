@@ -38,9 +38,9 @@ export function CreateSocial(props: {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead class="w-40">Type</TableHead>
-            <TableHead class="w-[45%]">Handle</TableHead>
-            <TableHead>Name</TableHead>
+            <TableHead class="w-40">타입</TableHead>
+            <TableHead class="w-[45%]">핸들</TableHead>
+            <TableHead>이름(생략가능)</TableHead>
             <TableHead class="w-6" />
           </TableRow>
         </TableHeader>
@@ -127,7 +127,9 @@ export function CreateSocial(props: {
                     variant="outline"
                     size="icon"
                     class="hover:bg-destructive hover:text-destructive-foreground"
-                    onClick={() => {}}
+                    onClick={() => {
+                      props.onChange(produce((s) => s.splice(i(), 1)));
+                    }}
                   >
                     <TbX class="size-5" />
                   </Button>
@@ -151,7 +153,7 @@ export function CreateSocial(props: {
           }}
         >
           <TbPlus class="size-5" />
-          <span class="sr-only">Add Social</span>
+          <span class="sr-only">소셜 추가</span>
         </Button>
       </div>
       <TableCaption>Socials</TableCaption>

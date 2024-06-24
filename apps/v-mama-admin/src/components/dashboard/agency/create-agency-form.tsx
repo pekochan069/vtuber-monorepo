@@ -1,7 +1,10 @@
-import { createForm, Field } from "@tanstack/solid-form";
+import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 import { Index, Match, Show, Switch, batch, createSignal } from "solid-js";
+import { createStore } from "solid-js/store";
+import { actions } from "astro:actions";
+import { Spinner, SpinnerType } from "solid-spinner";
 
 import { FieldInfo } from "~/components/field-info";
 import { Button } from "~/components/ui/button";
@@ -33,11 +36,8 @@ import {
   CheckboxControl,
   CheckboxLabel,
 } from "~/components/ui/checkbox";
-import { actions } from "astro:actions";
-import { Spinner, SpinnerType } from "solid-spinner";
 import { prepareLogo } from "~/lib/image";
 import { ImageUploadDialog } from "../image-uploader";
-import { createStore } from "solid-js/store";
 import type { SocialType } from "@repo/db/schema";
 import { CreateSocial } from "../social/create-social";
 
@@ -61,6 +61,16 @@ export function CreateAgencyForm() {
         handle: social.handle,
         name: social.name === "" ? social.type.name : social.name,
       }));
+
+      if (value.jp === "") {
+        value.jp = value.name;
+      }
+      if (value.en === "") {
+        value.en = value.name;
+      }
+      if (value.kr === "") {
+        value.kr = value.name;
+      }
 
       const res = await actions.agencyCreate({
         ...value,
@@ -99,7 +109,7 @@ export function CreateAgencyForm() {
         form.handleSubmit();
       }}
     >
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-4">
         <form.Field
           name="name"
           validators={{
@@ -112,7 +122,7 @@ export function CreateAgencyForm() {
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
               >
-                <TextFieldLabel>Name</TextFieldLabel>
+                <TextFieldLabel>이름</TextFieldLabel>
                 <TextField
                   onBlur={field().handleBlur}
                   name={field().name}
@@ -131,7 +141,7 @@ export function CreateAgencyForm() {
                 onChange={(value) => field().handleChange(value)}
                 class="relative"
               >
-                <TextFieldLabel>jp</TextFieldLabel>
+                <TextFieldLabel>일본어</TextFieldLabel>
                 <TextField
                   onBlur={field().handleBlur}
                   name={field().name}
@@ -148,7 +158,7 @@ export function CreateAgencyForm() {
                     )
                   }
                 >
-                  Copy Name
+                  이름 복사
                 </Button>
               </TextFieldRoot>
               <FieldInfo field={field()} />
@@ -163,7 +173,7 @@ export function CreateAgencyForm() {
                 onChange={(value) => field().handleChange(value)}
                 class="relative"
               >
-                <TextFieldLabel>en</TextFieldLabel>
+                <TextFieldLabel>영어</TextFieldLabel>
                 <TextField
                   onBlur={field().handleBlur}
                   name={field().name}
@@ -180,7 +190,7 @@ export function CreateAgencyForm() {
                     )
                   }
                 >
-                  Copy Name
+                  이름 복사
                 </Button>
               </TextFieldRoot>
               <FieldInfo field={field()} />
@@ -195,7 +205,7 @@ export function CreateAgencyForm() {
                 onChange={(value) => field().handleChange(value)}
                 class="relative"
               >
-                <TextFieldLabel>kr</TextFieldLabel>
+                <TextFieldLabel>한국어</TextFieldLabel>
                 <TextField
                   onBlur={field().handleBlur}
                   name={field().name}
@@ -212,7 +222,7 @@ export function CreateAgencyForm() {
                     )
                   }
                 >
-                  Copy Name
+                  이름 복사
                 </Button>
               </TextFieldRoot>
               <FieldInfo field={field()} />
@@ -226,7 +236,7 @@ export function CreateAgencyForm() {
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
               >
-                <TextFieldLabel>Description</TextFieldLabel>
+                <TextFieldLabel>설명</TextFieldLabel>
                 <TextArea
                   onBlur={field().handleBlur}
                   name={field().name}
@@ -246,7 +256,7 @@ export function CreateAgencyForm() {
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
               >
-                <TextFieldLabel>Website</TextFieldLabel>
+                <TextFieldLabel>웹사이트</TextFieldLabel>
                 <TextField
                   onBlur={field().handleBlur}
                   name={field().name}
@@ -263,13 +273,20 @@ export function CreateAgencyForm() {
             <div>
               <div class="space-y-1">
                 <label class="text-sm font-medium" for={field().name}>
-                  Created At
+                  결성 날짜
                 </label>
                 <DatePicker
                   onValueChange={(value) =>
                     field().handleChange(value.valueAsString[0])
                   }
                   value={[field().state.value]}
+                  locale="ko-KR"
+                  timeZone="Asia/Seoul"
+                  translate="yes"
+                  lang="ko-KR"
+                  format={(date) =>
+                    `${date.year}년 ${date.month}월 ${date.day}일`
+                  }
                 >
                   <DatePickerInput
                     placeholder="Pick a date"
@@ -414,7 +431,7 @@ export function CreateAgencyForm() {
         <form.Field
           name="icon"
           validators={{
-            onChange: z.string().min(1, "Icon is required"),
+            onChange: z.string().min(1, "아이콘이 필요합니다"),
           }}
         >
           {(field) => (
@@ -423,13 +440,13 @@ export function CreateAgencyForm() {
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
               >
-                <TextFieldLabel>Icon ID</TextFieldLabel>
+                <TextFieldLabel>아이콘 ID</TextFieldLabel>
                 <TextField
                   onBlur={field().handleBlur}
                   name={field().name}
                   id={field().name}
                   disabled={usePlaceholder()}
-                  placeholder="Only manually input if you already uploaded image before"
+                  placeholder="이미 이미지를 업로드했을 경우에만 직접 ID를 입력하세요"
                 />
               </TextFieldRoot>
               <ImageUploadDialog
@@ -445,7 +462,7 @@ export function CreateAgencyForm() {
                 uploadHandler={(image) =>
                   actions.agencyHandleLogoUpload({ image })
                 }
-                width={128}
+                maxHeight={128}
               />
               <div>
                 <Checkbox
@@ -502,7 +519,7 @@ export function CreateAgencyForm() {
             >
               <CheckboxControl />
               <CheckboxLabel class="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Defunct
+                해체 여부
               </CheckboxLabel>
             </Checkbox>
           )}
@@ -515,12 +532,19 @@ export function CreateAgencyForm() {
             >
               <div class="space-y-1">
                 <label class="text-sm font-medium" for={field().name}>
-                  Defunct At
+                  해체 날짜
                 </label>
                 <DatePicker
                   value={[field().state.value]}
                   onValueChange={(value) =>
                     field().handleChange(value.valueAsString[0])
+                  }
+                  locale="ko-KR"
+                  timeZone="Asia/Seoul"
+                  translate="yes"
+                  lang="ko-KR"
+                  format={(date) =>
+                    `${date.year}년 ${date.month}월 ${date.day}일`
                   }
                 >
                   <DatePickerInput
@@ -669,7 +693,7 @@ export function CreateAgencyForm() {
           >
             {(state) => (
               <Button type="submit" disabled={!state()[0]} class="w-full">
-                <Show when={state()[1]} fallback="Submit">
+                <Show when={state()[1]} fallback="제출">
                   <Spinner type={SpinnerType.puff} />
                 </Show>
               </Button>
@@ -678,10 +702,10 @@ export function CreateAgencyForm() {
         </div>
         <Switch>
           <Match when={status() === "success"}>
-            <div class="text-green-500">Successfully created new Agency</div>
+            <div class="text-green-500">성공하였습니다</div>
           </Match>
           <Match when={status() === "failed"}>
-            <div class="text-destructive">Failed to create new Agency</div>
+            <div class="text-destructive">실패하였습니다</div>
           </Match>
         </Switch>
       </div>
