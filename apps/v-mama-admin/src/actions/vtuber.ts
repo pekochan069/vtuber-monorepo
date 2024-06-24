@@ -13,7 +13,7 @@ export const createVtuber = defineAction({
     website: z.optional(z.string()),
     debut: z.string(),
     retired: z.boolean().default(false),
-    retireDate: z.optional(z.string()),
+    retiredAt: z.optional(z.string()),
     gender: z.string(),
     birthday: z.string(),
     icon: z.string(),
