@@ -12,7 +12,6 @@ import { Button } from "../ui/button";
 import {
   RadioGroup,
   RadioGroupItem,
-  RadioGroupItemControl,
   RadioGroupItemLabel,
 } from "../ui/radio-group";
 
@@ -147,13 +146,11 @@ export function CreateUserForm() {
                   class="flex gap-4"
                 >
                   <RadioGroupItem value="user" class="flex items-center gap-2">
-                    <RadioGroupItemControl id="role-user" />
                     <RadioGroupItemLabel for="role-user">
                       User
                     </RadioGroupItemLabel>
                   </RadioGroupItem>
                   <RadioGroupItem value="admin" class="flex items-center gap-2">
-                    <RadioGroupItemControl id="role-admin" />
                     <RadioGroupItemLabel for="role-user">
                       Admin
                     </RadioGroupItemLabel>
