@@ -36,7 +36,7 @@ import {
   CheckboxControl,
   CheckboxLabel,
 } from "~/components/ui/checkbox";
-import { prepareLogo } from "~/lib/image";
+import { prepareImage } from "~/lib/image";
 import { ImageUploadDialog } from "../image-uploader";
 import type { SocialType } from "@repo/db/schema";
 import { CreateSocial } from "../social/create-social";
@@ -458,7 +458,7 @@ export function CreateAgencyForm() {
                     field().handleChange(baseUrl);
                   });
                 }}
-                prepareImage={(file) => prepareLogo(file, 128)}
+                prepareImage={(file) => prepareImage(file, 128)}
                 uploadHandler={(image) =>
                   actions.agencyHandleLogoUpload({ image })
                 }

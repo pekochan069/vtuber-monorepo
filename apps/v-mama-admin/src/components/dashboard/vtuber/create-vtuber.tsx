@@ -47,7 +47,7 @@ import {
   TextFieldLabel,
   TextFieldRoot,
 } from "~/components/ui/textfield";
-import { prepareLogo } from "~/lib/image";
+import { prepareImage } from "~/lib/image";
 import {
   RadioGroup,
   RadioGroupItem,
@@ -672,9 +672,9 @@ export function CreateVtuberForm() {
                     field().handleChange(baseUrl);
                   });
                 }}
-                prepareImage={(file) => prepareLogo(file, 128)}
+                prepareImage={(file) => prepareImage(file, 128)}
                 uploadHandler={(image) =>
-                  actions.agencyHandleLogoUpload({ image })
+                  actions.vtuberHandleIconUpload({ image })
                 }
                 maxHeight={128}
               />
@@ -698,10 +698,10 @@ export function CreateVtuberForm() {
                   <CheckboxLabel>Use Placeholder</CheckboxLabel>
                 </Checkbox>
               </div>
-              <Show when={usePlaceholder() === false && image()}>
+              <Show when={usePlaceholder() === false && field().state.value}>
                 <img
                   // @ts-ignore
-                  src={URL.createObjectURL(image())}
+                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/vtuber/${field().state.value}.png`}
                   alt="icon"
                   width={128}
                   height={128}
@@ -710,7 +710,7 @@ export function CreateVtuberForm() {
               </Show>
               <Show when={usePlaceholder() === true}>
                 <img
-                  src="https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/placeholder.png"
+                  src="https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/placeholder-128.png"
                   alt="placeholder"
                   width={128}
                   height={128}

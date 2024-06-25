@@ -58,7 +58,7 @@ export function prepareImages(
   });
 }
 
-export function prepareLogo(file: File, maxHeight: number): Promise<Blob> {
+export function prepareImage(file: File, maxHeight: number): Promise<Blob> {
   const reader = new FileReader();
   const canvas = document.createElement("canvas");
 

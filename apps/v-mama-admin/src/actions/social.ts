@@ -2,6 +2,7 @@ import { db } from "@repo/db";
 import { socials, socialTypes } from "@repo/db/schema";
 import { generateId } from "@repo/utils/id";
 import { defineAction, z } from "astro:actions";
+import { handleImageUpload } from "./image-upload-handle";
 
 export const createSocialType = defineAction({
   input: z.object({
@@ -29,6 +30,20 @@ export const createSocialType = defineAction({
     return {
       ok: true,
     };
+  },
+});
+
+export const handleVtuberIconUpload = defineAction({
+  input: z.object({
+    image: z.object({
+      size: z.number(),
+      type: z.string().refine((t) => t.startsWith("image/")),
+    }),
+  }),
+  handler: async ({ image }) => {
+    const res = await handleImageUpload(image, "vtuber");
+
+    return res;
   },
 });
 
