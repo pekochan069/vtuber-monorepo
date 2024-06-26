@@ -103,7 +103,8 @@ export function AgencyList() {
     },
   ]);
 
-  function clickOutsideSearchBox(e) {
+  function clickOutsideSearchBox(e: MouseEvent) {
+    // @ts-ignore
     if (searchBoxRef && !searchBoxRef.contains(e.target)) {
       setShowOptions(false);
     }
@@ -212,33 +213,38 @@ export function AgencyList() {
               </div>
             </Match>
             <Match when={showOptions() && agencies()}>
-              {/* biome-ignore lint/style/noNonNullAssertion: <explanation> */}
-              <Show when={agencies()!.length > 0}>
-                <div class="bg-popover text-popover-foreground border-border absolute top-[calc(100%+0.1rem)] w-full rounded-md border shadow-md">
-                  <ul class="p-1">
-                    <For each={agencies()}>
-                      {(agency, i) => (
-                        <li>
-                          <button
-                            class="data-[focus=true]:bg-accent relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none"
-                            type="button"
-                            onMouseEnter={() => setFocusIndex(i())}
-                            onClick={() => setAgency(agency)}
-                            data-focus={focusIndex() === i()}
-                          >
-                            <div>{agency.name}</div>
-                          </button>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-              </Show>
+              {(agencyList) => (
+                <Show when={agencyList.length > 0}>
+                  <div class="bg-popover text-popover-foreground border-border absolute top-[calc(100%+0.1rem)] w-full rounded-md border shadow-md">
+                    <ul class="p-1">
+                      <For each={agencyList()}>
+                        {(agency, i) => (
+                          <li>
+                            <button
+                              class="data-[focus=true]:bg-accent relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none"
+                              type="button"
+                              onMouseEnter={() => setFocusIndex(i())}
+                              onClick={() => setAgency(agency)}
+                              data-focus={focusIndex() === i()}
+                            >
+                              <div>{agency.name}</div>
+                            </button>
+                          </li>
+                        )}
+                      </For>
+                    </ul>
+                  </div>
+                </Show>
+              )}
             </Match>
           </Switch>
         </Suspense>
       </div>
-      <div class="mt-8"></div>
+      <div class="mt-8">
+        <Show when={selectedAgency()}>
+          {(agency) => <div>{agency().name}</div>}
+        </Show>
+      </div>
     </div>
   );
 }
