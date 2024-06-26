@@ -33,20 +33,6 @@ export const createSocialType = defineAction({
   },
 });
 
-export const handleVtuberIconUpload = defineAction({
-  input: z.object({
-    image: z.object({
-      size: z.number(),
-      type: z.string().refine((t) => t.startsWith("image/")),
-    }),
-  }),
-  handler: async ({ image }) => {
-    const res = await handleImageUpload(image, "vtuber");
-
-    return res;
-  },
-});
-
 export const getSocialTypes = defineAction({
   handler: async () => {
     const res = await db.select().from(socialTypes);

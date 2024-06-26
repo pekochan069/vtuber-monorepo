@@ -29,7 +29,7 @@ import {
 
 export function ImageUploadDialog(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImage: (file: File) => Promise<Blob>;
+  processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
@@ -56,7 +56,7 @@ export function ImageUploadDialog(props: {
 
 function DesktopUploader(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImage: (file: File) => Promise<Blob>;
+  processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
@@ -79,7 +79,7 @@ function DesktopUploader(props: {
               props.onUpload(image, baseUrl);
               setOpen(false);
             }}
-            prepareImage={props.prepareImage}
+            processImage={props.processImage}
             uploadHandler={props.uploadHandler}
             maxHeight={props.maxHeight}
           />
@@ -91,7 +91,7 @@ function DesktopUploader(props: {
 
 function MobileUploader(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImage: (file: File) => Promise<Blob>;
+  processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
@@ -115,7 +115,7 @@ function MobileUploader(props: {
                 props.onUpload(image, baseUrl);
                 setOpen(false);
               }}
-              prepareImage={props.prepareImage}
+              processImage={props.processImage}
               uploadHandler={props.uploadHandler}
               maxHeight={props.maxHeight}
             />
@@ -128,7 +128,7 @@ function MobileUploader(props: {
 
 function ImageUploader(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
-  prepareImage: (file: File) => Promise<Blob>;
+  processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
@@ -136,7 +136,7 @@ function ImageUploader(props: {
   maxHeight: number;
 }) {
   const [file, setFile] = createSignal<File | null>(null);
-  const [image] = createResource(file, props.prepareImage);
+  const [image] = createResource(file, props.processImage);
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async (files) => {
       setIsDropping(false);

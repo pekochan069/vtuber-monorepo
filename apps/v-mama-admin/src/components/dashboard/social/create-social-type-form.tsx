@@ -23,7 +23,7 @@ export function CreateSocialTypeForm() {
       icon: "",
     },
     onSubmit: async ({ value }) => {
-      const res = await actions.socialCreateType(value);
+      const res = await actions.createSocialType(value);
 
       if (res.ok) {
         setStatus("success");

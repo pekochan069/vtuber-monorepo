@@ -72,7 +72,7 @@ export function CreateAgencyForm() {
         value.kr = value.name;
       }
 
-      const res = await actions.agencyCreate({
+      const res = await actions.createAgency({
         ...value,
         socialList: transformedSocials,
       });
@@ -85,7 +85,6 @@ export function CreateAgencyForm() {
     },
     validatorAdapter: zodValidator(),
   }));
-  const [image, setImage] = createSignal<Blob>();
   const [baseUrl, setBaseUrl] = createSignal<string>("");
   const [usePlaceholder, setUsePlaceholder] = createSignal(false);
   const [status, setStatus] = createSignal<"idle" | "success" | "failed">(
@@ -452,15 +451,14 @@ export function CreateAgencyForm() {
               <ImageUploadDialog
                 onUpload={(image, baseUrl) => {
                   batch(() => {
-                    setImage(() => image);
                     setBaseUrl(() => baseUrl);
                     setUsePlaceholder(false);
                     field().handleChange(baseUrl);
                   });
                 }}
-                prepareImage={(file) => prepareImage(file, 128)}
+                processImage={(file) => prepareImage(file, 128)}
                 uploadHandler={(image) =>
-                  actions.agencyHandleLogoUpload({ image })
+                  actions.handleImageUpload({ image, prefix: "agency" })
                 }
                 maxHeight={128}
               />
@@ -484,12 +482,12 @@ export function CreateAgencyForm() {
                   <CheckboxLabel>Use Placeholder</CheckboxLabel>
                 </Checkbox>
               </div>
-              <Show when={usePlaceholder() === false && image()}>
+              <Show
+                when={usePlaceholder() === false && field().state.value !== ""}
+              >
                 <img
-                  // @ts-ignore
-                  src={URL.createObjectURL(image())}
+                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/vtuber/${field().state.value}.png`}
                   alt="icon"
-                  width={128}
                   height={128}
                   class="mx-auto mt-4 rounded-md shadow-md"
                 />

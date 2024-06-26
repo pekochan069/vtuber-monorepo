@@ -96,7 +96,7 @@ export function CreateVtuberForm() {
         value.kr = value.name;
       }
 
-      const res = await actions.vtuberCreate({
+      const res = await actions.createVtuber({
         ...value,
         socialList: transformedSocials,
       });
@@ -109,7 +109,7 @@ export function CreateVtuberForm() {
     },
     validatorAdapter: zodValidator(),
   }));
-  const [image, setImage] = createSignal<Blob>();
+
   const [baseUrl, setBaseUrl] = createSignal<string>("");
   const [usePlaceholder, setUsePlaceholder] = createSignal<boolean>(false);
   const [socials, setSocials] = createStore(
@@ -120,7 +120,7 @@ export function CreateVtuberForm() {
     }[],
   );
 
-  const [agencies] = createResource(actions.agencyGetAll);
+  const [agencies] = createResource(actions.getAgencies);
   const agencyOptions = () => {
     if (agencies()) {
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
@@ -666,15 +666,14 @@ export function CreateVtuberForm() {
               <ImageUploadDialog
                 onUpload={(image, baseUrl) => {
                   batch(() => {
-                    setImage(() => image);
                     setBaseUrl(() => baseUrl);
                     setUsePlaceholder(false);
                     field().handleChange(baseUrl);
                   });
                 }}
-                prepareImage={(file) => prepareImage(file, 128)}
+                processImage={(file) => prepareImage(file, 128)}
                 uploadHandler={(image) =>
-                  actions.vtuberHandleIconUpload({ image })
+                  actions.handleImageUpload({ image, prefix: "vtuber" })
                 }
                 maxHeight={128}
               />
@@ -700,7 +699,6 @@ export function CreateVtuberForm() {
               </div>
               <Show when={usePlaceholder() === false && field().state.value}>
                 <img
-                  // @ts-ignore
                   src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/vtuber/${field().state.value}.png`}
                   alt="icon"
                   width={128}

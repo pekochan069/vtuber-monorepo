@@ -7,7 +7,8 @@ if (!user) {
 
 import DashboardLayout from "~/layouts/DashboardLayout.astro";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "~/components/ui/card";
-import { CreateAgencyForm } from "~/components/dashboard/agency/create-agency-form";
+import { CreateAgencyForm } from "~/components/dashboard/agency/create-agency";
+import { AgencyList } from "~/components/dashboard/agency/agency-list";
 ---
 
 <DashboardLayout>
@@ -19,6 +20,14 @@ import { CreateAgencyForm } from "~/components/dashboard/agency/create-agency-fo
       </CardHeader>
       <CardContent>
         <CreateAgencyForm client:only="solid-js" />
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle class="text-2xl">소속사 목록</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <AgencyList client:only="solid-js" />
       </CardContent>
     </Card>
   </div>

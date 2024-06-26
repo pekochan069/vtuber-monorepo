@@ -81,24 +81,32 @@ export const createAgency = defineAction({
   },
 });
 
-export const handleLogoUpload = defineAction({
-  input: z.object({
-    image: z.object({
-      size: z.number(),
-      type: z.string().refine((t) => t.startsWith("image/")),
-    }),
-  }),
-  handler: async ({ image }) => {
-    const res = await handleImageUpload(image, "agency");
-
-    return res;
-  },
-});
-
-export const getAllAgency = defineAction({
+export const getAgencies = defineAction({
   handler: async () => {
     try {
       return await db.select().from(agencies);
+    } catch {
+      return [] as Agency[];
+    }
+  },
+});
+
+export const queryAgencies = defineAction({
+  input: z.string(),
+  handler: async (query) => {
+    try {
+      const res = await db.query.agencies.findMany({
+        where: (agency, { or, like }) =>
+          or(
+            like(agency.name, `%${query}%`),
+            like(agency.jp, `%${query}%`),
+            like(agency.en, `%${query}%`),
+            like(agency.kr, `%${query}%`),
+          ),
+        limit: 10,
+      });
+
+      return res;
     } catch {
       return [] as Agency[];
     }

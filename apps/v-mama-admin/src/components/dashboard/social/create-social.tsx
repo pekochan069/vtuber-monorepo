@@ -31,7 +31,7 @@ export function CreateSocial(props: {
     }[]
   >;
 }) {
-  const [socialTypes] = createResource(actions.socialGetAllTypes);
+  const [socialTypes] = createResource(actions.getSocialTypes);
 
   return (
     <div class="flex flex-col justify-center">
