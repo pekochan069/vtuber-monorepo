@@ -214,7 +214,7 @@ export function AgencyList() {
             </Match>
             <Match when={showOptions() && agencies()}>
               {(agencyList) => (
-                <Show when={agencyList.length > 0}>
+                <Show when={agencyList().length > 0}>
                   <div class="bg-popover text-popover-foreground border-border absolute top-[calc(100%+0.1rem)] w-full rounded-md border shadow-md">
                     <ul class="p-1">
                       <For each={agencyList()}>
