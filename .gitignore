@@ -179,3 +179,4 @@ dist
 dist/
 wrangler.toml
 .wrangler/
+.vercel

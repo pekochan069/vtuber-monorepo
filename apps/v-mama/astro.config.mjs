@@ -13,11 +13,6 @@ export default defineConfig({
     }),
     solidJs(),
   ],
-  vite: {
-    build: {
-      minify: false,
-    },
-  },
   experimental: {
     actions: true,
   },

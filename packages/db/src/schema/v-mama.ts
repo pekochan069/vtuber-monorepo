@@ -15,7 +15,7 @@ export const illustrators = vmamaBuilder("illustrators", {
   en: text("en"),
   kr: text("kr"),
   description: text("description"),
-  logo: text("logo").notNull(),
+  icon: text("icon").notNull(),
   website: text("website"),
 });
 

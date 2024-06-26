@@ -16,10 +16,16 @@ export const craeteIllustrator = defineAction({
       z.object({ type: z.string(), handle: z.string(), name: z.string() }),
     ),
   }),
-  handler: async (
-    { name, jp, en, kr, description, icon, website, socialList },
-    context,
-  ) => {
+  handler: async ({
+    name,
+    jp,
+    en,
+    kr,
+    description,
+    icon,
+    website,
+    socialList,
+  }) => {
     const id = generateId();
     const socialUpload = socialList.map((s) => ({
       id: generateId(),
