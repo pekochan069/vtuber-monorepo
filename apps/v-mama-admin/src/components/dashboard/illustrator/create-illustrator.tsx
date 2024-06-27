@@ -2,7 +2,7 @@ import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { batch, createSignal, Match, Show, Switch } from "solid-js";
 import { z } from "zod";
-import { FieldInfo } from "~/components/field-info";
+import { FieldInfo, WithFieldInfo } from "~/components/field-info";
 import { Button } from "~/components/ui/button";
 import {
   TextField,
@@ -71,7 +71,7 @@ export function CreateIllustratorForm() {
           }}
         >
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -83,13 +83,12 @@ export function CreateIllustratorForm() {
                   id={field().name}
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="jp">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -115,13 +114,12 @@ export function CreateIllustratorForm() {
                   이름 복사
                 </Button>
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="en">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -147,13 +145,12 @@ export function CreateIllustratorForm() {
                   이름 복사
                 </Button>
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="kr">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -179,13 +176,12 @@ export function CreateIllustratorForm() {
                   이름 복사
                 </Button>
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="description">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -199,13 +195,12 @@ export function CreateIllustratorForm() {
                   class="max-h-[118px] resize-none"
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="website">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -218,8 +213,7 @@ export function CreateIllustratorForm() {
                   type="url"
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field
@@ -229,7 +223,7 @@ export function CreateIllustratorForm() {
           }}
         >
           {(field) => (
-            <div class="relative flex flex-col gap-2">
+            <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -279,7 +273,7 @@ export function CreateIllustratorForm() {
               </div>
               <Show when={usePlaceholder() === false && field().state.value}>
                 <img
-                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/vtuber/${field().state.value}.png`}
+                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/illustrator/${field().state.value}.png`}
                   alt="icon"
                   width={128}
                   height={128}
@@ -295,8 +289,7 @@ export function CreateIllustratorForm() {
                   class="mx-auto mt-4 rounded-md shadow-md"
                 />
               </Show>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <div>

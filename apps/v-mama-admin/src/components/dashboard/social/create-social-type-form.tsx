@@ -2,7 +2,7 @@ import { createForm } from "@tanstack/solid-form";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 
-import { FieldInfo } from "~/components/field-info";
+import { FieldInfo, WithFieldInfo } from "~/components/field-info";
 import {
   TextField,
   TextFieldDescription,
@@ -53,7 +53,7 @@ export function CreateSocialTypeForm() {
           }}
         >
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -65,8 +65,7 @@ export function CreateSocialTypeForm() {
                   onBlur={field().handleBlur}
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field
@@ -76,7 +75,7 @@ export function CreateSocialTypeForm() {
           }}
         >
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -88,8 +87,7 @@ export function CreateSocialTypeForm() {
                   onBlur={field().handleBlur}
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field
@@ -99,7 +97,7 @@ export function CreateSocialTypeForm() {
           }}
         >
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -114,8 +112,7 @@ export function CreateSocialTypeForm() {
                   Icon should be located at project_root/public/icons/
                 </TextFieldDescription>
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <div class="mt-6">

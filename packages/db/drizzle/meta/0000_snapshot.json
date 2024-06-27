@@ -1,0 +1,732 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "6",
+  "dialect": "sqlite",
+  "tables": {
+    "vtuber_agencies": {
+      "name": "vtuber_agencies",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jp": {
+          "autoincrement": false,
+          "name": "jp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "en": {
+          "autoincrement": false,
+          "name": "en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kr": {
+          "autoincrement": false,
+          "name": "kr",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website": {
+          "autoincrement": false,
+          "name": "website",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "autoincrement": false,
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "defunct": {
+          "default": false,
+          "autoincrement": false,
+          "name": "defunct",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "defunct_at": {
+          "autoincrement": false,
+          "name": "defunct_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon": {
+          "autoincrement": false,
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "vtuber_agency_socials": {
+      "name": "vtuber_agency_socials",
+      "columns": {
+        "agency_id": {
+          "autoincrement": false,
+          "name": "agency_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "social_id": {
+          "autoincrement": false,
+          "name": "social_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "vtuber_agency_socials_agency_id_social_id_pk": {
+          "columns": [
+            "agency_id",
+            "social_id"
+          ],
+          "name": "vtuber_agency_socials_agency_id_social_id_pk"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "vtuber_agency_socials_social_id_vtuber_socials_id_fk": {
+          "name": "vtuber_agency_socials_social_id_vtuber_socials_id_fk",
+          "tableFrom": "vtuber_agency_socials",
+          "tableTo": "vtuber_socials",
+          "columnsFrom": [
+            "social_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "vtuber_agency_socials_agency_id_vtuber_agencies_id_fk": {
+          "name": "vtuber_agency_socials_agency_id_vtuber_agencies_id_fk",
+          "tableFrom": "vtuber_agency_socials",
+          "tableTo": "vtuber_agencies",
+          "columnsFrom": [
+            "agency_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "vtuber_social_types": {
+      "name": "vtuber_social_types",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "autoincrement": false,
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "icon": {
+          "autoincrement": false,
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "vtuber_socials": {
+      "name": "vtuber_socials",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "type_id": {
+          "autoincrement": false,
+          "name": "type_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "handle": {
+          "autoincrement": false,
+          "name": "handle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {
+        "vtuber_socials_type_id_vtuber_social_types_id_fk": {
+          "name": "vtuber_socials_type_id_vtuber_social_types_id_fk",
+          "tableFrom": "vtuber_socials",
+          "tableTo": "vtuber_social_types",
+          "columnsFrom": [
+            "type_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "vtuber_vtuber_socials": {
+      "name": "vtuber_vtuber_socials",
+      "columns": {
+        "vtuber_id": {
+          "autoincrement": false,
+          "name": "vtuber_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "social_id": {
+          "autoincrement": false,
+          "name": "social_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "vtuber_vtuber_socials_social_id_vtuber_id_pk": {
+          "columns": [
+            "social_id",
+            "vtuber_id"
+          ],
+          "name": "vtuber_vtuber_socials_social_id_vtuber_id_pk"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "vtuber_vtuber_socials_social_id_vtuber_socials_id_fk": {
+          "name": "vtuber_vtuber_socials_social_id_vtuber_socials_id_fk",
+          "tableFrom": "vtuber_vtuber_socials",
+          "tableTo": "vtuber_socials",
+          "columnsFrom": [
+            "social_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "vtuber_vtuber_socials_vtuber_id_vtuber_vtubers_id_fk": {
+          "name": "vtuber_vtuber_socials_vtuber_id_vtuber_vtubers_id_fk",
+          "tableFrom": "vtuber_vtuber_socials",
+          "tableTo": "vtuber_vtubers",
+          "columnsFrom": [
+            "vtuber_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "vtuber_vtubers": {
+      "name": "vtuber_vtubers",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jp": {
+          "autoincrement": false,
+          "name": "jp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "en": {
+          "autoincrement": false,
+          "name": "en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kr": {
+          "autoincrement": false,
+          "name": "kr",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "debut": {
+          "autoincrement": false,
+          "name": "debut",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "retired": {
+          "default": false,
+          "autoincrement": false,
+          "name": "retired",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "retire_date": {
+          "autoincrement": false,
+          "name": "retire_date",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gender": {
+          "autoincrement": false,
+          "name": "gender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "birthday": {
+          "autoincrement": false,
+          "name": "birthday",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website": {
+          "autoincrement": false,
+          "name": "website",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon": {
+          "autoincrement": false,
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "agency_id": {
+          "autoincrement": false,
+          "name": "agency_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "agency_id_idx": {
+          "name": "agency_id_idx",
+          "columns": [
+            "agency_id"
+          ],
+          "isUnique": false
+        },
+        "name_idx": {
+          "name": "name_idx",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "vtuber_vtubers_agency_id_vtuber_agencies_id_fk": {
+          "name": "vtuber_vtubers_agency_id_vtuber_agencies_id_fk",
+          "tableFrom": "vtuber_vtubers",
+          "tableTo": "vtuber_agencies",
+          "columnsFrom": [
+            "agency_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "vmama_illustrator_socials": {
+      "name": "vmama_illustrator_socials",
+      "columns": {
+        "illustrator_id": {
+          "autoincrement": false,
+          "name": "illustrator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "social_id": {
+          "autoincrement": false,
+          "name": "social_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "vmama_illustrator_socials_illustrator_id_social_id_pk": {
+          "columns": [
+            "illustrator_id",
+            "social_id"
+          ],
+          "name": "vmama_illustrator_socials_illustrator_id_social_id_pk"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "vmama_illustrator_socials_social_id_vtuber_socials_id_fk": {
+          "name": "vmama_illustrator_socials_social_id_vtuber_socials_id_fk",
+          "tableFrom": "vmama_illustrator_socials",
+          "tableTo": "vtuber_socials",
+          "columnsFrom": [
+            "social_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "vmama_illustrator_socials_illustrator_id_vmama_illustrators_id_fk": {
+          "name": "vmama_illustrator_socials_illustrator_id_vmama_illustrators_id_fk",
+          "tableFrom": "vmama_illustrator_socials",
+          "tableTo": "vmama_illustrators",
+          "columnsFrom": [
+            "illustrator_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "vmama_illustrators": {
+      "name": "vmama_illustrators",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jp": {
+          "autoincrement": false,
+          "name": "jp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "en": {
+          "autoincrement": false,
+          "name": "en",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kr": {
+          "autoincrement": false,
+          "name": "kr",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon": {
+          "autoincrement": false,
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "website": {
+          "autoincrement": false,
+          "name": "website",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "vmama_outfits": {
+      "name": "vmama_outfits",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "vtuber_id": {
+          "autoincrement": false,
+          "name": "vtuber_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "illustrator_id": {
+          "autoincrement": false,
+          "name": "illustrator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "autoincrement": false,
+          "name": "date",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image": {
+          "autoincrement": false,
+          "name": "image",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {
+        "vmama_outfits_illustrator_id_vmama_illustrators_id_fk": {
+          "name": "vmama_outfits_illustrator_id_vmama_illustrators_id_fk",
+          "tableFrom": "vmama_outfits",
+          "tableTo": "vmama_illustrators",
+          "columnsFrom": [
+            "illustrator_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "vmama_outfits_vtuber_id_vtuber_vtubers_id_fk": {
+          "name": "vmama_outfits_vtuber_id_vtuber_vtubers_id_fk",
+          "tableFrom": "vmama_outfits",
+          "tableTo": "vtuber_vtubers",
+          "columnsFrom": [
+            "vtuber_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "vmama_admin_sessions": {
+      "name": "vmama_admin_sessions",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "autoincrement": false,
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {
+        "vmama_admin_sessions_user_id_vmama_admin_users_id_fk": {
+          "name": "vmama_admin_sessions_user_id_vmama_admin_users_id_fk",
+          "tableFrom": "vmama_admin_sessions",
+          "tableTo": "vmama_admin_users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "vmama_admin_users": {
+      "name": "vmama_admin_users",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "username": {
+          "autoincrement": false,
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "autoincrement": false,
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "autoincrement": false,
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "vmama_admin_users_username_unique": {
+          "name": "vmama_admin_users_username_unique",
+          "columns": [
+            "username"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

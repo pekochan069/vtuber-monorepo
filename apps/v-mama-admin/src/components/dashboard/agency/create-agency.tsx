@@ -6,7 +6,7 @@ import { createStore } from "solid-js/store";
 import { actions } from "astro:actions";
 import { Spinner, SpinnerType } from "solid-spinner";
 
-import { FieldInfo } from "~/components/field-info";
+import { FieldInfo, WithFieldInfo } from "~/components/field-info";
 import { Button } from "~/components/ui/button";
 import { TextArea } from "~/components/ui/textarea";
 import {
@@ -14,23 +14,7 @@ import {
   TextFieldLabel,
   TextFieldRoot,
 } from "~/components/ui/textfield";
-import {
-  DatePicker,
-  DatePickerContent,
-  DatePickerContext,
-  DatePickerInput,
-  DatePickerRangeText,
-  DatePickerTable,
-  DatePickerTableBody,
-  DatePickerTableCell,
-  DatePickerTableCellTrigger,
-  DatePickerTableHead,
-  DatePickerTableHeader,
-  DatePickerTableRow,
-  DatePickerView,
-  DatePickerViewControl,
-  DatePickerViewTrigger,
-} from "~/components/ui/date-picker";
+import { DatePicker } from "../date-picker";
 import {
   Checkbox,
   CheckboxControl,
@@ -116,7 +100,7 @@ export function CreateAgencyForm() {
           }}
         >
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -128,13 +112,12 @@ export function CreateAgencyForm() {
                   id={field().name}
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="jp">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -160,13 +143,12 @@ export function CreateAgencyForm() {
                   이름 복사
                 </Button>
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="en">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -192,13 +174,12 @@ export function CreateAgencyForm() {
                   이름 복사
                 </Button>
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="kr">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -224,13 +205,12 @@ export function CreateAgencyForm() {
                   이름 복사
                 </Button>
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="description">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -244,13 +224,12 @@ export function CreateAgencyForm() {
                   class="max-h-[118px] resize-none"
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="website">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -263,168 +242,19 @@ export function CreateAgencyForm() {
                   type="url"
                 />
               </TextFieldRoot>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field name="createdAt">
           {(field) => (
-            <div>
+            <WithFieldInfo field={field()}>
               <div class="space-y-1">
                 <label class="text-sm font-medium" for={field().name}>
                   결성 날짜
                 </label>
-                <DatePicker
-                  onValueChange={(value) =>
-                    field().handleChange(value.valueAsString[0])
-                  }
-                  value={[field().state.value]}
-                  locale="ko-KR"
-                  timeZone="Asia/Seoul"
-                  translate="yes"
-                  lang="ko-KR"
-                  format={(date) =>
-                    `${date.year}년 ${date.month}월 ${date.day}일`
-                  }
-                >
-                  <DatePickerInput
-                    placeholder="Pick a date"
-                    id={field().name}
-                    name={field().name}
-                    onBlur={field().handleBlur}
-                  />
-                  <DatePickerContent>
-                    <DatePickerView view="day">
-                      <DatePickerContext>
-                        {(api) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerViewTrigger>
-                                <DatePickerRangeText />
-                              </DatePickerViewTrigger>
-                            </DatePickerViewControl>
-                            <DatePickerTable>
-                              <DatePickerTableHead>
-                                <DatePickerTableRow>
-                                  <Index each={api().weekDays}>
-                                    {(weekDay) => (
-                                      <DatePickerTableHeader>
-                                        {weekDay().short}
-                                      </DatePickerTableHeader>
-                                    )}
-                                  </Index>
-                                </DatePickerTableRow>
-                              </DatePickerTableHead>
-                              <DatePickerTableBody>
-                                <Index each={api().weeks}>
-                                  {(week) => (
-                                    <DatePickerTableRow>
-                                      <Index each={week()}>
-                                        {(day) => (
-                                          <DatePickerTableCell value={day()}>
-                                            <DatePickerTableCellTrigger>
-                                              {day().day}
-                                            </DatePickerTableCellTrigger>
-                                          </DatePickerTableCell>
-                                        )}
-                                      </Index>
-                                    </DatePickerTableRow>
-                                  )}
-                                </Index>
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-                    <DatePickerView
-                      view="month"
-                      class="w-[calc(var(--preference-width)-(0.75rem*2))]"
-                    >
-                      <DatePickerContext>
-                        {(api) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerViewTrigger>
-                                <DatePickerRangeText />
-                              </DatePickerViewTrigger>
-                            </DatePickerViewControl>
-                            <DatePickerTable>
-                              <DatePickerTableBody>
-                                <Index
-                                  each={api().getMonthsGrid({
-                                    columns: 4,
-                                    format: "short",
-                                  })}
-                                >
-                                  {(months) => (
-                                    <DatePickerTableRow>
-                                      <Index each={months()}>
-                                        {(month) => (
-                                          <DatePickerTableCell
-                                            value={month().value}
-                                          >
-                                            <DatePickerTableCellTrigger>
-                                              {month().label}
-                                            </DatePickerTableCellTrigger>
-                                          </DatePickerTableCell>
-                                        )}
-                                      </Index>
-                                    </DatePickerTableRow>
-                                  )}
-                                </Index>
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-                    <DatePickerView
-                      view="year"
-                      class="w-[calc(var(--preference-width)-(0.75rem*2))]"
-                    >
-                      <DatePickerContext>
-                        {(api) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerViewTrigger>
-                                <DatePickerRangeText />
-                              </DatePickerViewTrigger>
-                            </DatePickerViewControl>
-                            <DatePickerTable>
-                              <DatePickerTableBody>
-                                <Index
-                                  each={api().getYearsGrid({
-                                    columns: 4,
-                                  })}
-                                >
-                                  {(years) => (
-                                    <DatePickerTableRow>
-                                      <Index each={years()}>
-                                        {(year) => (
-                                          <DatePickerTableCell
-                                            value={year().value}
-                                          >
-                                            <DatePickerTableCellTrigger>
-                                              {year().label}
-                                            </DatePickerTableCellTrigger>
-                                          </DatePickerTableCell>
-                                        )}
-                                      </Index>
-                                    </DatePickerTableRow>
-                                  )}
-                                </Index>
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-                  </DatePickerContent>
-                </DatePicker>
+                <DatePicker field={field()} />
               </div>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <form.Field
@@ -434,7 +264,7 @@ export function CreateAgencyForm() {
           }}
         >
           {(field) => (
-            <div class="relative flex flex-col gap-2">
+            <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
               <TextFieldRoot
                 value={field().state.value}
                 onChange={(value) => field().handleChange(value)}
@@ -486,7 +316,7 @@ export function CreateAgencyForm() {
                 when={usePlaceholder() === false && field().state.value !== ""}
               >
                 <img
-                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/vtuber/${field().state.value}.png`}
+                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/agency/${field().state.value}.png`}
                   alt="icon"
                   height={128}
                   class="mx-auto mt-4 rounded-md shadow-md"
@@ -501,8 +331,7 @@ export function CreateAgencyForm() {
                   class="mx-auto mt-4 rounded-md shadow-md"
                 />
               </Show>
-              <FieldInfo field={field()} />
-            </div>
+            </WithFieldInfo>
           )}
         </form.Field>
         <div>
@@ -532,154 +361,7 @@ export function CreateAgencyForm() {
                 <label class="text-sm font-medium" for={field().name}>
                   해체 날짜
                 </label>
-                <DatePicker
-                  value={[field().state.value]}
-                  onValueChange={(value) =>
-                    field().handleChange(value.valueAsString[0])
-                  }
-                  locale="ko-KR"
-                  timeZone="Asia/Seoul"
-                  translate="yes"
-                  lang="ko-KR"
-                  format={(date) =>
-                    `${date.year}년 ${date.month}월 ${date.day}일`
-                  }
-                >
-                  <DatePickerInput
-                    placeholder="Pick a date"
-                    id={field().name}
-                    name={field().name}
-                    onBlur={field().handleBlur}
-                  />
-                  <DatePickerContent>
-                    <DatePickerView view="day">
-                      <DatePickerContext>
-                        {(api) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerViewTrigger>
-                                <DatePickerRangeText />
-                              </DatePickerViewTrigger>
-                            </DatePickerViewControl>
-                            <DatePickerTable>
-                              <DatePickerTableHead>
-                                <DatePickerTableRow>
-                                  <Index each={api().weekDays}>
-                                    {(weekDay) => (
-                                      <DatePickerTableHeader>
-                                        {weekDay().short}
-                                      </DatePickerTableHeader>
-                                    )}
-                                  </Index>
-                                </DatePickerTableRow>
-                              </DatePickerTableHead>
-                              <DatePickerTableBody>
-                                <Index each={api().weeks}>
-                                  {(week) => (
-                                    <DatePickerTableRow>
-                                      <Index each={week()}>
-                                        {(day) => (
-                                          <DatePickerTableCell value={day()}>
-                                            <DatePickerTableCellTrigger>
-                                              {day().day}
-                                            </DatePickerTableCellTrigger>
-                                          </DatePickerTableCell>
-                                        )}
-                                      </Index>
-                                    </DatePickerTableRow>
-                                  )}
-                                </Index>
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-                    <DatePickerView
-                      view="month"
-                      class="w-[calc(var(--preference-width)-(0.75rem*2))]"
-                    >
-                      <DatePickerContext>
-                        {(api) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerViewTrigger>
-                                <DatePickerRangeText />
-                              </DatePickerViewTrigger>
-                            </DatePickerViewControl>
-                            <DatePickerTable>
-                              <DatePickerTableBody>
-                                <Index
-                                  each={api().getMonthsGrid({
-                                    columns: 4,
-                                    format: "short",
-                                  })}
-                                >
-                                  {(months) => (
-                                    <DatePickerTableRow>
-                                      <Index each={months()}>
-                                        {(month) => (
-                                          <DatePickerTableCell
-                                            value={month().value}
-                                          >
-                                            <DatePickerTableCellTrigger>
-                                              {month().label}
-                                            </DatePickerTableCellTrigger>
-                                          </DatePickerTableCell>
-                                        )}
-                                      </Index>
-                                    </DatePickerTableRow>
-                                  )}
-                                </Index>
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-                    <DatePickerView
-                      view="year"
-                      class="w-[calc(var(--preference-width)-(0.75rem*2))]"
-                    >
-                      <DatePickerContext>
-                        {(api) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerViewTrigger>
-                                <DatePickerRangeText />
-                              </DatePickerViewTrigger>
-                            </DatePickerViewControl>
-                            <DatePickerTable>
-                              <DatePickerTableBody>
-                                <Index
-                                  each={api().getYearsGrid({
-                                    columns: 4,
-                                  })}
-                                >
-                                  {(years) => (
-                                    <DatePickerTableRow>
-                                      <Index each={years()}>
-                                        {(year) => (
-                                          <DatePickerTableCell
-                                            value={year().value}
-                                          >
-                                            <DatePickerTableCellTrigger>
-                                              {year().label}
-                                            </DatePickerTableCellTrigger>
-                                          </DatePickerTableCell>
-                                        )}
-                                      </Index>
-                                    </DatePickerTableRow>
-                                  )}
-                                </Index>
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-                  </DatePickerContent>
-                </DatePicker>
+                <DatePicker field={field()} />
               </div>
               <FieldInfo field={field()} />
             </div>

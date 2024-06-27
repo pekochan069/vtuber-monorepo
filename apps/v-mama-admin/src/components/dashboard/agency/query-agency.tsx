@@ -36,7 +36,7 @@ async function getAgencies(searchTerm: string) {
   return res;
 }
 
-export function AgencyList() {
+export function QueryAgency() {
   let searchBoxRef: HTMLDivElement | undefined;
 
   const [searchTerm, setSearchTerm] = createSignal("");
@@ -242,7 +242,11 @@ export function AgencyList() {
       </div>
       <div class="mt-8">
         <Show when={selectedAgency()}>
-          {(agency) => <div>{agency().name}</div>}
+          {(agency) => (
+            <div>
+              <div>asd</div>
+            </div>
+          )}
         </Show>
       </div>
     </div>
