@@ -1,3 +1,5 @@
-import { defineAction, z } from "astro:actions";
+import { queryVtuber } from "./vtuber";
 
-export const server = {};
+export const server = {
+  queryVtuber,
+};

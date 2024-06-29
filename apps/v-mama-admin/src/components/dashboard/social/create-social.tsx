@@ -1,15 +1,16 @@
-import type { SocialType } from "@repo/db/schema";
 import { actions } from "astro:actions";
 import { TbPlus, TbX } from "solid-icons/tb";
 import { createResource, For } from "solid-js";
 import { produce, type SetStoreFunction } from "solid-js/store";
-import { Button } from "~/components/ui/button";
+
+import type { SocialType } from "@repo/db/schema";
+import { Button } from "@repo/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+} from "@repo/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -18,8 +19,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { TextField, TextFieldRoot } from "~/components/ui/textfield";
+} from "@repo/ui/table";
+import { TextField, TextFieldRoot } from "@repo/ui/textfield";
 
 export function CreateSocial(props: {
   socials: { type: SocialType; handle: string; name?: string }[];

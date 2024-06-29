@@ -3,8 +3,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
+} from "@repo/ui/dropdown-menu";
+import { Button } from "@repo/ui/button";
 import { TbDeviceDesktop, TbMoon, TbSun } from "solid-icons/tb";
 
 export function ThemeToggle() {

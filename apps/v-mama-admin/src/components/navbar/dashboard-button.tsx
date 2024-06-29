@@ -1,6 +1,6 @@
 import { TbArrowRight } from "solid-icons/tb";
 
-import { Button } from "~/components/ui/button";
+import { Button } from "@repo/ui/button";
 
 export function DashboardButton() {
   return (

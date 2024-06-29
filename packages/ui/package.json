@@ -1,5 +1,47 @@
 {
 	"name": "@repo/ui",
-	"module": "./src/index.ts",
-	"type": "module"
+	"type": "module",
+	"exports": {
+		"./accordion": "./src/ui/accordion.tsx",
+		"./badge": "./src/ui/badge.tsx",
+		"./button": "./src/ui/button.tsx",
+		"./card": "./src/ui/card.tsx",
+		"./checkbox": "./src/ui/checkbox.tsx",
+		"./collapsible": "./src/ui/collapsible.tsx",
+		"./command": "./src/ui/command.tsx",
+		"./combobox": "./src/ui/combobox.tsx",
+		"./date-picker": "./src/ui/date-picker.tsx",
+		"./dialog": "./src/ui/dialog.tsx",
+		"./drawer": "./src/ui/drawer.tsx",
+		"./dropdown-menu": "./src/ui/dropdown-menu.tsx",
+		"./hover-card": "./src/ui/hover-card.tsx",
+		"./image": "./src/ui/image.tsx",
+		"./label": "./src/ui/image.tsx",
+		"./pagination": "./src/ui/pagination.tsx",
+		"./popover": "./src/ui/popover.tsx",
+		"./radio-group": "./src/ui/radio-group.tsx",
+		"./separator": "./src/ui/separator.tsx",
+		"./sheet": "./src/ui/sheet.tsx",
+		"./skeleton": "./src/ui/skeleton.tsx",
+		"./sonner": "./src/ui/sonner.tsx",
+		"./switch": "./src/ui/switch.tsx",
+		"./table": "./src/ui/table.tsx",
+		"./tabs": "./src/ui/tabs.tsx",
+		"./textarea": "./src/ui/textarea.tsx",
+		"./textfield": "./src/ui/textfield.tsx",
+		"./toggle": "./src/ui/toggle.tsx",
+		"./tooltip": "./src/ui/tooltip.tsx"
+	},
+	"devDependencies": {
+		"solid-js": "^1.8.17"
+	},
+	"dependencies": {
+		"@ark-ui/solid": "^3.4.0",
+		"@corvu/drawer": "^0.2.1",
+		"@kobalte/core": "^0.13.3",
+		"@repo/utils": "workspace:*",
+		"class-variance-authority": "^0.7.0",
+		"cmdk-solid": "^1.0.1",
+		"solid-sonner": "^0.2.8"
+	}
 }

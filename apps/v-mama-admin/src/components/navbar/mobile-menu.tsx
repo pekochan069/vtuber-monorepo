@@ -1,9 +1,9 @@
 import { TbLogout, TbMenu } from "solid-icons/tb";
 import { actions } from "astro:actions";
-import { createEffect, Show } from "solid-js";
+import { Show } from "solid-js";
 
-import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
-import { Button } from "~/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@repo/ui/sheet";
+import { Button } from "@repo/ui/button";
 import { ThemeToggle } from "./theme-toggle";
 
 export function MobileMenu(props: {

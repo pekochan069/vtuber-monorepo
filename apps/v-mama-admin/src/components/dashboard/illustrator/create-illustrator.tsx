@@ -2,26 +2,19 @@ import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { batch, createSignal, Match, Show, Switch } from "solid-js";
 import { z } from "zod";
-import { FieldInfo, WithFieldInfo } from "~/components/field-info";
-import { Button } from "~/components/ui/button";
-import {
-  TextField,
-  TextFieldLabel,
-  TextFieldRoot,
-} from "~/components/ui/textfield";
-import { prepareImage } from "~/lib/image";
-import { ImageUploadDialog } from "../image-uploader";
-import { actions } from "astro:actions";
-import {
-  Checkbox,
-  CheckboxControl,
-  CheckboxLabel,
-} from "~/components/ui/checkbox";
 import { createStore } from "solid-js/store";
-import type { SocialType } from "@repo/db/schema";
-import { TextArea } from "~/components/ui/textarea";
-import { CreateSocial } from "../social/create-social";
 import { Spinner, SpinnerType } from "solid-spinner";
+import { actions } from "astro:actions";
+
+import { ImageUploadDialog } from "../image-uploader";
+import { CreateSocial } from "../social/create-social";
+import { WithFieldInfo } from "~/components/field-info";
+import { prepareImage } from "~/lib/image";
+import { Button } from "@repo/ui/button";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { Checkbox, CheckboxControl, CheckboxLabel } from "@repo/ui/checkbox";
+import { TextArea } from "@repo/ui/textarea";
+import type { SocialType } from "@repo/db/schema";
 
 export function CreateIllustratorForm() {
   const form = createForm(() => ({

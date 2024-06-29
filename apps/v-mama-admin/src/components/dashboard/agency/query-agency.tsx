@@ -21,11 +21,7 @@ import {
 import { Spinner, SpinnerType } from "solid-spinner";
 import { TbSearch } from "solid-icons/tb";
 
-import {
-  TextField,
-  TextFieldLabel,
-  TextFieldRoot,
-} from "~/components/ui/textfield";
+import { TextField, TextFieldRoot } from "@repo/ui/textfield";
 import type { Agency } from "@repo/db/schema";
 
 async function getAgencies(searchTerm: string) {

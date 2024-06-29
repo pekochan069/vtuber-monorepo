@@ -4,7 +4,6 @@ import { defineAction, z } from "astro:actions";
 import { db } from "@repo/db";
 import { generateId } from "@repo/utils/id";
 import { handleImageUpload } from "./image-upload-handle";
-import { Image } from "../components/ui/image";
 
 export const createAgency = defineAction({
   input: z.object({

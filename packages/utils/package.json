@@ -1,12 +1,15 @@
 {
-	"name": "@repo/utils",
-	"module": "./src/index.ts",
-	"type": "module",
-	"exports": {
-		".": "./src/index.ts",
-		"./id": "./src/id.ts"
-	},
-	"dependencies": {
-		"nanoid": "^5.0.7"
-	}
+  "name": "@repo/utils",
+  "module": "./src/index.ts",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./id": "./src/id.ts",
+    "./cn": "./src/cn.ts"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "nanoid": "^5.0.7",
+    "tailwind-merge": "^2.3.0"
+  }
 }

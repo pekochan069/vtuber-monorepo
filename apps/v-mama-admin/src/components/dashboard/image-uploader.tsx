@@ -1,7 +1,6 @@
 import {
   createResource,
   createSignal,
-  For,
   Match,
   onMount,
   Show,
@@ -11,21 +10,21 @@ import {
 import { createDropzone } from "@solid-primitives/upload";
 import { Spinner, SpinnerType } from "solid-spinner";
 
-import { Button } from "../ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "@repo/ui/dialog";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerLabel,
   DrawerTrigger,
-} from "../ui/drawer";
+} from "@repo/ui/drawer";
 
 export function ImageUploadDialog(props: {
   onUpload: (image: Blob, baseUrl: string) => void;
@@ -187,7 +186,6 @@ function ImageUploader(props: {
               <Match when={image()}>
                 <div class="flex items-end justify-center gap-6">
                   <img
-                    // biome-ignore lint/style/noNonNullAssertion: <explanation>
                     src={URL.createObjectURL(image()!)}
                     alt="uploaded"
                     class="rounded-md object-cover shadow-md"
@@ -224,7 +222,6 @@ function ImageUploader(props: {
                   },
                   body: temp,
                 });
-                // biome-ignore lint/style/noNonNullAssertion: <explanation>
                 props.onUpload(image()!, res.id);
                 setIsUploading(false);
               })

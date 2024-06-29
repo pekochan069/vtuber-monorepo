@@ -5,13 +5,9 @@ import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { actions } from "astro:actions";
 
-import {
-  TextField,
-  TextFieldLabel,
-  TextFieldRoot,
-} from "~/components/ui/textfield";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { Button } from "@repo/ui/button";
 import { FieldInfo } from "~/components/field-info";
-import { Button } from "~/components/ui/button";
 import type { LoginTags } from "~/actions/auth";
 
 export function LoginForm() {

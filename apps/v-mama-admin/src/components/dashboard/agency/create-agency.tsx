@@ -1,29 +1,21 @@
 import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
-import { Index, Match, Show, Switch, batch, createSignal } from "solid-js";
+import { Match, Show, Switch, batch, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { actions } from "astro:actions";
 import { Spinner, SpinnerType } from "solid-spinner";
 
-import { FieldInfo, WithFieldInfo } from "~/components/field-info";
-import { Button } from "~/components/ui/button";
-import { TextArea } from "~/components/ui/textarea";
-import {
-  TextField,
-  TextFieldLabel,
-  TextFieldRoot,
-} from "~/components/ui/textfield";
 import { DatePicker } from "../date-picker";
-import {
-  Checkbox,
-  CheckboxControl,
-  CheckboxLabel,
-} from "~/components/ui/checkbox";
-import { prepareImage } from "~/lib/image";
 import { ImageUploadDialog } from "../image-uploader";
-import type { SocialType } from "@repo/db/schema";
 import { CreateSocial } from "../social/create-social";
+import { FieldInfo, WithFieldInfo } from "~/components/field-info";
+import { prepareImage } from "~/lib/image";
+import { Button } from "@repo/ui/button";
+import { TextArea } from "@repo/ui/textarea";
+import { Checkbox, CheckboxControl, CheckboxLabel } from "@repo/ui/checkbox";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import type { SocialType } from "@repo/db/schema";
 
 export function CreateAgencyForm() {
   const form = createForm(() => ({

@@ -1,5 +1,6 @@
 import { createSignal, onMount } from "solid-js";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+
+import { Tabs, TabsList, TabsTrigger } from "@repo/ui/tabs";
 
 export function DashboardTabs() {
   let tabsRef: HTMLDivElement | undefined;

@@ -7,13 +7,13 @@ import { actions } from "astro:actions";
 import { z } from "zod";
 
 import type { CreateUserTags } from "~/actions/auth";
-import { TextField, TextFieldLabel, TextFieldRoot } from "../ui/textfield";
-import { Button } from "../ui/button";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { Button } from "@repo/ui/button";
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupItemLabel,
-} from "../ui/radio-group";
+} from "@repo/ui/radio-group";
 
 export function CreateUserForm() {
   const form = createForm(() => ({

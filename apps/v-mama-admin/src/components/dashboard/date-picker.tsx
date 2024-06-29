@@ -1,7 +1,6 @@
 import type { FieldApi } from "@tanstack/solid-form";
 import { Index } from "solid-js";
 
-import { FieldInfo } from "../field-info";
 import {
   DatePickerContent,
   DatePickerContext,
@@ -18,7 +17,7 @@ import {
   DatePickerView,
   DatePickerViewControl,
   DatePickerViewTrigger,
-} from "../ui/date-picker";
+} from "@repo/ui/date-picker";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function DatePicker(props: { field: FieldApi<any, any, any, any> }) {

@@ -1,4 +1,4 @@
-import { TbSearch } from "solid-icons/tb";
+import { TbSearch, TbX } from "solid-icons/tb";
 import { debounce, type Scheduled } from "@solid-primitives/scheduled";
 import {
   createEffect,
@@ -8,28 +8,39 @@ import {
   onCleanup,
   onMount,
   Show,
+  untrack,
   type JSX,
 } from "solid-js";
 import { createForm } from "@tanstack/solid-form";
+import { actions } from "astro:actions";
+import { Command as CommandPrimitive } from "cmdk-solid";
+import { useKeyDownEvent } from "@solid-primitives/keyboard";
 
-import { Button } from "../ui/button";
+import { FieldInfo, WithFieldInfo } from "../field-info";
+import { Button } from "@repo/ui/button";
 import {
   Drawer,
   DrawerContent,
-  DrawerDescription,
   DrawerHeader,
   DrawerLabel,
   DrawerTrigger,
-} from "../ui/drawer";
-import { TextField, TextFieldLabel, TextFieldRoot } from "../ui/textfield";
-import { FieldInfo } from "../field-info";
+} from "@repo/ui/drawer";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { createStore, produce } from "solid-js/store";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "@repo/ui/dialog";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@repo/ui/command";
+import { Badge } from "@repo/ui/badge";
 
 export function SearchDialog() {
   const [isDesktop, setIsDesktop] = createSignal(false);
@@ -58,7 +69,7 @@ function MobileDialog() {
             <DrawerLabel>버튜버 마마 검색</DrawerLabel>
           </DrawerHeader>
           <div class="p-4">
-            <SearchForm />
+            <SearchForm isDesktop={false} />
           </div>
         </div>
       </DrawerContent>
@@ -67,7 +78,7 @@ function MobileDialog() {
 }
 
 function DesktopDialog() {
-  const [open, setOpen] = createSignal(false);
+  const [open, setOpen] = createSignal(true);
   return (
     <Dialog open={open()} onOpenChange={setOpen}>
       <DialogTrigger as={Button} variant="ghost" size="icon">
@@ -78,14 +89,14 @@ function DesktopDialog() {
           <DialogTitle>버튜버 마마 검색</DialogTitle>
         </DialogHeader>
         <div class="p-4">
-          <SearchForm />
+          <SearchForm isDesktop={true} />
         </div>
       </DialogContent>
     </Dialog>
   );
 }
 
-export function SearchForm() {
+function SearchForm(props: { isDesktop: boolean }) {
   const form = createForm(() => ({
     defaultValues: {
       illustrator: "",
@@ -106,237 +117,204 @@ export function SearchForm() {
       }}
     >
       <div class="space-y-4">
-        <form.Field name="illustrator">
-          {(field) => (
-            <>
-              <InputField
-                fetchFunction={getData1}
-                name={field().name}
-                label="일러스트레이터"
-                value={field().state.value}
-                onChange={(value) => field().handleChange(value)}
-                onBlur={field().handleBlur}
-              />
-              <FieldInfo field={field()} />
-            </>
-          )}
-        </form.Field>
-        <form.Field name="agency">
-          {(field) => (
-            <>
-              <InputField
-                fetchFunction={getData2}
-                name={field().name}
-                label="소속사"
-                value={field().state.value}
-                onChange={(value) => field().handleChange(value)}
-                onBlur={field().handleBlur}
-              />
-              <FieldInfo field={field()} />
-            </>
-          )}
-        </form.Field>
-        <form.Field name="vtuber">
-          {(field) => (
-            <>
-              <InputField
-                fetchFunction={getData3}
-                name={field().name}
-                label="버튜버"
-                value={field().state.value}
-                onChange={(value) => field().handleChange(value)}
-                onBlur={field().handleBlur}
-              />
-              <FieldInfo field={field()} />
-            </>
-          )}
-        </form.Field>
-        <div class="py-4">
-          <div class="grid grid-cols-2 gap-4">
-            <Button type="clear" variant="secondary">
-              초기화
-            </Button>
-            <Button type="submit" variant="default">
-              검색
-            </Button>
-          </div>
-        </div>
+        {/* <form.Field name="illustrator"></form.Field> */}
+        {/* <SearchFormTextInput /> */}
+        <VtuberSearch />
       </div>
     </form>
   );
 }
 
-const data = [
-  { name: "히라쿠즈 미유키", id: 0 },
-  { name: "히메모리 루나", id: 1 },
-  { name: "히메사마", id: 2 },
-  { name: "히메하시마리", id: 3 },
-  { name: "우사다 페코라", id: 4 },
-  { name: "히메히나", id: 5 },
-  { name: "가나다", id: 6 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "def", id: 8 },
-  { name: "ghi", id: 9 },
+const aa = [
+  {
+    id: "1",
+    name: "a",
+  },
+  {
+    id: "2",
+    name: "b",
+  },
+  {
+    id: "3",
+    name: "c",
+  },
+  {
+    id: "4",
+    name: "d",
+  },
+  {
+    id: "5",
+    name: "e",
+  },
 ];
 
-const data2 = [
-  { name: "히라쿠즈 미유키", id: 0 },
-  { name: "히메모리 루나", id: 1 },
-  { name: "히메사마", id: 2 },
-  { name: "히메하시마리", id: 3 },
-  { name: "우사다 페코라", id: 4 },
-  { name: "히메히나", id: 5 },
-  { name: "가나다", id: 6 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "def", id: 8 },
-  { name: "ghi", id: 9 },
-];
+async function fetchVtubers(query: string) {
+  if (query === "" || query.length < 2) {
+    return [];
+  }
 
-const data3 = [
-  { name: "히라쿠즈 미유키", id: 0 },
-  { name: "히메모리 루나", id: 1 },
-  { name: "히메사마", id: 2 },
-  { name: "히메하시마리", id: 3 },
-  { name: "우사다 페코라", id: 4 },
-  { name: "히메히나", id: 5 },
-  { name: "가나다", id: 6 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "abc", id: 7 },
-  { name: "def", id: 8 },
-  { name: "ghi", id: 9 },
-];
-
-async function getData1(query: string) {
-  if (!query || query.length < 1) return [];
-
-  return data.filter((item) => item.name.includes(query));
+  return actions.queryVtuber(query);
 }
 
-async function getData2(query: string) {
-  if (!query || query.length < 1) return [];
+function VtuberSearch() {
+  const [query, setQuery] = createSignal("");
+  const [queriedVtubers] = createResource(query, fetchVtubers);
 
-  return data.filter((item) => item.name.includes(query));
+  return (
+    <SearchFormTextInput
+      setQuery={setQuery}
+      queriedVtubers={queriedVtubers()}
+      // queriedVtubers={aa}
+    />
+  );
 }
 
-async function getData3(query: string) {
-  if (!query || query.length < 1) return [];
-
-  return data.filter((item) => item.name.includes(query));
-}
-
-function InputField(props: {
-  fetchFunction: (query: string) => Promise<{ name: string; id: number }[]>;
-  label: string;
-  name: string;
-  value: string;
-  onChange: (value: string) => void;
-  onBlur: () => void;
+function SearchFormTextInput(props: {
+  setQuery: (value: string) => void;
+  queriedVtubers: { id: string; name: string }[] | undefined;
+  // value: string;
+  // onChange: (value: string) => void;
 }) {
-  let inputField: HTMLInputElement | undefined;
+  let commandRef: HTMLDivElement | undefined;
+  let inputRef: HTMLInputElement | undefined;
 
-  const [debounced, setDebounced] = createSignal();
-  const [autocompleteInput, setAutocompleteInput] = createSignal("");
-  const [autocomplete] = createResource(autocompleteInput, props.fetchFunction);
-  const [showAutocomplete, setShowAutocomplete] = createSignal(false);
+  const [open, setOpen] = createSignal(false);
+  const [input, setInput] = createSignal("");
+  const trigger = debounce((value: string) => props.setQuery(value), 200);
+  const [selected, setSelected] = createStore<{ id: string; name: string }[]>(
+    [],
+  );
+  const [focusIndex, setFocusIndex] = createSignal(0);
+  const keyDownEvent = useKeyDownEvent();
 
   function clickOutside(e: MouseEvent) {
-    if (inputField?.contains(e.target as Node)) return;
-    setShowAutocomplete(false);
+    if (
+      commandRef &&
+      !commandRef.contains(e.target as Node) &&
+      inputRef &&
+      !inputRef.contains(e.target as Node)
+    ) {
+      setOpen(false);
+    }
   }
 
   onMount(() => {
-    document.addEventListener("click", clickOutside);
+    document.addEventListener("mousedown", clickOutside);
   });
 
   onCleanup(() => {
-    document.removeEventListener("click", clickOutside);
+    document.removeEventListener("mousedown", clickOutside);
   });
 
   createEffect(() => {
-    // @ts-ignore
-    debounced()?.clear();
-
-    if (props.value.length < 1) {
-      setDebounced(null);
-      setAutocompleteInput("");
-      setShowAutocomplete(false);
-      return;
+    if (input() !== "" && input().length > 1) {
+      trigger(input());
     }
-
-    setDebounced(
-      debounce(() => {
-        setAutocompleteInput(props.value);
-      }, 200),
-    );
   });
 
   createEffect(() => {
-    if (!autocomplete()) return;
+    if (!open()) return;
 
-    // @ts-ignore
-    if (autocomplete().length > 0) {
-      setShowAutocomplete(true);
-    }
+    const e = keyDownEvent();
+
+    untrack(() => {
+      if (!e) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (props.queriedVtubers !== undefined) {
+          setFocusIndex((index) =>
+            index + 1 < props.queriedVtubers!.length ? index + 1 : index,
+          );
+        }
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setFocusIndex((index) => (index - 1 >= 0 ? index - 1 : index));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (props.queriedVtubers !== undefined) {
+          setSelected(
+            produce((selected) => {
+              selected.push(props.queriedVtubers![focusIndex()]);
+            }),
+          );
+          setInput("");
+        }
+      }
+    });
   });
 
   return (
-    <div class="relative" ref={inputField}>
-      <TextFieldRoot
-        class="space-y-2"
-        value={props.value}
-        onChange={props.onChange}
-      >
-        <TextFieldLabel>{props.label}</TextFieldLabel>
-        <TextField
-          name={props.name}
-          id={props.name}
-          // onBlur={props.onBlur}
-          onFocusIn={() => {
-            // @ts-ignore
-            if (autocomplete() && autocomplete().length > 0) {
-              setShowAutocomplete(true);
-            }
-          }}
-        />
-      </TextFieldRoot>
-      <Show when={showAutocomplete()}>
-        <ul class="bg-background absolute z-10 mt-1 max-h-56 min-h-8 w-full overflow-y-auto rounded-md border shadow-lg">
-          <For each={autocomplete()}>
-            {(item) => (
-              <li>
-                <Button
-                  variant="ghost"
+    <Command class="overflow-visible bg-transparent" ref={commandRef}>
+      <div class="border-input ring-offset-background focus-within:ring-ring group rounded-md border px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-offset-2">
+        <div class="flex flex-wrap gap-1">
+          <For each={selected}>
+            {(item, i) => (
+              <Badge variant="secondary">
+                <span>{item.name}</span>
+                <button
+                  class="ring-offset-background focus:ring-ring ml-1 rounded-full outline-none focus:ring-2 focus:ring-offset-2"
                   type="button"
-                  class="w-full justify-normal gap-3"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setSelected(
+                        produce((selected) => selected.splice(i(), 1)),
+                      );
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelected(produce((selected) => selected.splice(i(), 1)));
+                  }}
                 >
-                  <TbSearch />
-                  <span>{item.name}</span>
-                </Button>
-              </li>
+                  <TbX class="text-muted-foreground hover:text-foreground size-3" />
+                </button>
+              </Badge>
             )}
           </For>
-        </ul>
-      </Show>
-    </div>
+          <CommandPrimitive.Input
+            class="placeholder:text-muted-foreground ml-2 flex-1 bg-transparent outline-none"
+            ref={inputRef}
+            value={input()}
+            onValueChange={(search) => setInput(search)}
+            onBlur={() => setOpen(false)}
+            onFocus={() => setOpen(true)}
+            placeholder="검색어를 입력하세요"
+          />
+        </div>
+      </div>
+      <div class="relative mt-2">
+        <CommandList>
+          <Show when={open() && props.queriedVtubers}>
+            {(vtubers) => (
+              <Show when={vtubers().length > 0}>
+                <div class="bg-popover text-popover-foreground animate-in absolute top-0 z-10 w-full rounded-md border shadow-md outline-none">
+                  <div class="text-foreground h-full overflow-auto p-1">
+                    <For each={vtubers()}>
+                      {(vtuber, i) => (
+                        <div
+                          class="aria-selected:bg-accent aria-selected:text-accent-foreground relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                          aria-selected={focusIndex() === i()}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setInput("");
+                            setSelected(selected.length, vtuber);
+                          }}
+                          onMouseEnter={() => setFocusIndex(i())}
+                        >
+                          {vtuber.name}
+                        </div>
+                      )}
+                    </For>
+                  </div>
+                </div>
+              </Show>
+            )}
+          </Show>
+        </CommandList>
+      </div>
+    </Command>
   );
 }

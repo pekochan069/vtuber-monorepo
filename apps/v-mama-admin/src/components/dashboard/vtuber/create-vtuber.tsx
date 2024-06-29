@@ -5,46 +5,36 @@ import {
   batch,
   createResource,
   createSignal,
-  Index,
   Match,
   Show,
-  Suspense,
   Switch,
 } from "solid-js";
 import { createStore } from "solid-js/store";
 import { zodValidator } from "@tanstack/zod-form-adapter";
+import { Spinner, SpinnerType } from "solid-spinner";
 
-import type { SocialType } from "@repo/db/schema";
 import { ImageUploadDialog } from "../image-uploader";
 import { CreateSocial } from "../social/create-social";
-import { FieldInfo, WithFieldInfo } from "~/components/field-info";
 import { DatePicker } from "../date-picker";
-import { Button } from "~/components/ui/button";
-import { Spinner, SpinnerType } from "solid-spinner";
-import {
-  Checkbox,
-  CheckboxControl,
-  CheckboxLabel,
-} from "~/components/ui/checkbox";
-import {
-  TextField,
-  TextFieldLabel,
-  TextFieldRoot,
-} from "~/components/ui/textfield";
+import { FieldInfo, WithFieldInfo } from "~/components/field-info";
+import type { SocialType } from "@repo/db/schema";
+import { Button } from "@repo/ui/button";
 import { prepareImage } from "~/lib/image";
+import { Checkbox, CheckboxControl, CheckboxLabel } from "@repo/ui/checkbox";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupItemLabel,
-} from "~/components/ui/radio-group";
-import { TextArea } from "~/components/ui/textarea";
+} from "@repo/ui/radio-group";
+import { TextArea } from "@repo/ui/textarea";
 import {
   Combobox,
   ComboboxContent,
   ComboboxInput,
   ComboboxItem,
   ComboboxTrigger,
-} from "~/components/ui/combobox";
+} from "@repo/ui/combobox";
 
 export function CreateVtuberForm() {
   const form = createForm(() => ({
@@ -107,7 +97,6 @@ export function CreateVtuberForm() {
   const [agencies] = createResource(actions.getAgencies);
   const agencyOptions = () => {
     if (agencies()) {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       return agencies()!.map((v) => ({
         value: v.id,
         label: v.name,
