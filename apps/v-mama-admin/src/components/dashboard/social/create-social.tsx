@@ -1,6 +1,6 @@
 import { actions } from "astro:actions";
 import { TbPlus, TbX } from "solid-icons/tb";
-import { createResource, For } from "solid-js";
+import { createResource, For, Match, Switch } from "solid-js";
 import { produce, type SetStoreFunction } from "solid-js/store";
 
 import type { SocialType } from "@repo/db/schema";
@@ -21,6 +21,8 @@ import {
   TableRow,
 } from "@repo/ui/table";
 import { TextField, TextFieldRoot } from "@repo/ui/textfield";
+
+const INVERT_LIST = ["x.svg", "niconico.svg"];
 
 export function CreateSocial(props: {
   socials: { type: SocialType; handle: string; name?: string }[];
@@ -79,11 +81,27 @@ export function CreateSocial(props: {
                             }}
                           >
                             <div class="flex items-center gap-2">
-                              <img
-                                src={`/icons/${type.icon}`}
-                                alt={type.name}
-                                class="h-6 w-6"
-                              />
+                              <Switch
+                                fallback={
+                                  <img
+                                    src={`/icons/${type.icon}`}
+                                    alt={type.name}
+                                    class="h-6 w-6"
+                                  />
+                                }
+                              >
+                                <Match
+                                  when={INVERT_LIST.find(
+                                    (v) => v === type.icon,
+                                  )}
+                                >
+                                  <img
+                                    src={`/icons/${type.icon}`}
+                                    alt={type.name}
+                                    class="h-6 w-6 dark:invert"
+                                  />
+                                </Match>
+                              </Switch>
                               <span>{type.name}</span>
                             </div>
                           </DropdownMenuItem>
@@ -98,7 +116,6 @@ export function CreateSocial(props: {
                     onChange={(value) => {
                       props.onChange(
                         i(),
-                        // @ts-ignore
                         produce((s) => {
                           s.handle = value;
                         }),
@@ -146,7 +163,6 @@ export function CreateSocial(props: {
           size="icon"
           onClick={() => {
             props.onChange(props.socials.length, {
-              // biome-ignore lint/style/noNonNullAssertion: Google is always the first social type
               type: socialTypes()![0],
               handle: "",
               name: "",

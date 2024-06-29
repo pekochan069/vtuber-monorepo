@@ -201,6 +201,7 @@ export function CreateUserForm() {
           </div>
         </div>
       </div>
+      <img src="/icons/x.svg" class="h-6 w-6" alt="Close" />
     </form>
   );
 }
