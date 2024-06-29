@@ -149,7 +149,7 @@ const aa = [
 ];
 
 async function fetchVtubers(query: string) {
-  if (query === "" || query.length < 2) {
+  if (query === "") {
     return [];
   }
 

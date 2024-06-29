@@ -36,6 +36,8 @@ import {
   ComboboxTrigger,
 } from "@repo/ui/combobox";
 
+const MAX_ICON_HEIGHT = 256;
+
 export function CreateVtuberForm() {
   const form = createForm(() => ({
     defaultValues: {
@@ -385,11 +387,11 @@ export function CreateVtuberForm() {
                     field().handleChange(baseUrl);
                   });
                 }}
-                processImage={(file) => prepareImage(file, 128)}
+                processImage={(file) => prepareImage(file, MAX_ICON_HEIGHT)}
                 uploadHandler={(image) =>
                   actions.handleImageUpload({ image, prefix: "vtuber" })
                 }
-                maxHeight={128}
+                maxHeight={MAX_ICON_HEIGHT}
               />
               <div>
                 <Checkbox
