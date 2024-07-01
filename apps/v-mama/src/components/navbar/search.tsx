@@ -1,4 +1,5 @@
 import { actions } from "astro:actions";
+import { TextField as TextFieldPrimitive } from "@kobalte/core/text-field";
 import { useKeyDownEvent } from "@solid-primitives/keyboard";
 import { type Scheduled, debounce } from "@solid-primitives/scheduled";
 import { createForm } from "@tanstack/solid-form";
@@ -116,62 +117,97 @@ function SearchForm(props: { isDesktop: boolean }) {
         form.handleSubmit();
       }}
     >
-      <div class="space-y-4">
-        {/* <form.Field name="illustrator"></form.Field> */}
-        {/* <SearchFormTextInput /> */}
+      <div class="space-y-2">
+        <IllustratorSearch />
+        <AgencySearch />
         <VtuberSearch />
       </div>
     </form>
   );
 }
 
-const aa = [
-  {
-    id: "1",
-    name: "a",
-  },
-  {
-    id: "2",
-    name: "b",
-  },
-  {
-    id: "3",
-    name: "c",
-  },
-  {
-    id: "4",
-    name: "d",
-  },
-  {
-    id: "5",
-    name: "e",
-  },
-];
-
-async function fetchVtubers(query: string) {
-  if (query === "") {
-    return [];
-  }
-
-  return actions.queryVtuber(query);
-}
-
 function VtuberSearch() {
   const [query, setQuery] = createSignal("");
-  const [queriedVtubers] = createResource(query, fetchVtubers);
+  const [queriedVtubers] = createResource(query, async (query: string) => {
+    if (query === "") {
+      return [];
+    }
+
+    return actions.queryVtuber(query);
+  });
 
   return (
-    <SearchFormTextInput
-      setQuery={setQuery}
-      queriedVtubers={queriedVtubers()}
-      // queriedVtubers={aa}
-    />
+    <div class="space-y-1">
+      <label for="vtuber-search" class="mb-2 text-sm">
+        버튜버
+      </label>
+      <SearchFormTextInput
+        setQuery={setQuery}
+        queried={queriedVtubers() || []}
+        inputId="vtuber-search"
+      />
+    </div>
+  );
+}
+
+function AgencySearch() {
+  const [query, setQuery] = createSignal("");
+  const [queriedAgencies] = createResource(query, async (query: string) => {
+    if (query === "") {
+      return [];
+    }
+
+    return actions.queryAgency(query);
+  });
+
+  return (
+    <div class="space-y-1">
+      <label for="agency-search" class="mb-2 text-sm">
+        소속사
+      </label>
+      <SearchFormTextInput
+        setQuery={setQuery}
+        queried={queriedAgencies() || []}
+        inputId="agency-search"
+      />
+    </div>
+  );
+}
+
+function IllustratorSearch() {
+  const [query, setQuery] = createSignal("");
+  const [queriedIllustrators] = createResource(query, async (query: string) => {
+    if (query === "") {
+      return [];
+    }
+
+    return actions.queryIllustrators(query);
+  });
+
+  return (
+    <div class="space-y-1">
+      <label for="illustrator-search" class="peer mb-2 text-sm">
+        일러스트레이터
+      </label>
+      <SearchFormTextInput
+        setQuery={setQuery}
+        queried={queriedIllustrators() || []}
+        inputId="illustrator-search"
+      />
+    </div>
   );
 }
 
 function SearchFormTextInput(props: {
   setQuery: (value: string) => void;
-  queriedVtubers: { id: string; name: string }[] | undefined;
+  queried: {
+    id: string;
+    name: string;
+    jp: string | null;
+    en: string | null;
+    kr: string | null;
+  }[];
+  inputId: string;
   // value: string;
   // onChange: (value: string) => void;
 }) {
@@ -207,9 +243,7 @@ function SearchFormTextInput(props: {
   });
 
   createEffect(() => {
-    if (input() !== "" && input().length > 1) {
-      trigger(input());
-    }
+    trigger(input());
   });
 
   createEffect(() => {
@@ -222,9 +256,9 @@ function SearchFormTextInput(props: {
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        if (props.queriedVtubers !== undefined) {
+        if (props.queried !== undefined) {
           setFocusIndex((index) =>
-            index + 1 < props.queriedVtubers!.length ? index + 1 : index,
+            index + 1 < props.queried!.length ? index + 1 : index,
           );
         }
       } else if (e.key === "ArrowUp") {
@@ -232,10 +266,10 @@ function SearchFormTextInput(props: {
         setFocusIndex((index) => (index - 1 >= 0 ? index - 1 : index));
       } else if (e.key === "Enter") {
         e.preventDefault();
-        if (props.queriedVtubers !== undefined) {
+        if (props.queried !== undefined) {
           setSelected(
             produce((selected) => {
-              selected.push(props.queriedVtubers![focusIndex()]);
+              selected.push(props.queried![focusIndex()]);
             }),
           );
           setInput("");
@@ -244,8 +278,12 @@ function SearchFormTextInput(props: {
     });
   });
 
+  createEffect(() => {
+    console.log(props.queried);
+  });
+
   return (
-    <Command class="overflow-visible bg-transparent" ref={commandRef}>
+    <Command class="bg-transparent; overflow-visible" ref={commandRef}>
       <div class="border-input ring-offset-background focus-within:ring-ring group rounded-md border px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-offset-2">
         <div class="flex flex-wrap gap-1">
           <For each={selected}>
@@ -273,20 +311,21 @@ function SearchFormTextInput(props: {
               </Badge>
             )}
           </For>
-          <CommandPrimitive.Input
+          <input
             class="placeholder:text-muted-foreground ml-2 flex-1 bg-transparent outline-none"
             ref={inputRef}
             value={input()}
-            onValueChange={(search) => setInput(search)}
+            onInput={(e) => setInput(e.currentTarget.value)}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
             placeholder="검색어를 입력하세요"
+            id={props.inputId}
           />
         </div>
       </div>
       <div class="relative mt-2">
         <CommandList>
-          <Show when={open() && props.queriedVtubers}>
+          <Show when={open() && props.queried}>
             {(vtubers) => (
               <Show when={vtubers().length > 0}>
                 <div class="bg-popover text-popover-foreground animate-in absolute top-0 z-10 w-full rounded-md border shadow-md outline-none">

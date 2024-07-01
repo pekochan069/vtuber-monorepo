@@ -13,10 +13,6 @@ export const queryVtuber = defineAction({
             like(vtuber.en, `%${param}%`),
             like(vtuber.kr, `%${param}%`),
           ),
-        columns: {
-          id: true,
-          name: true,
-        },
         limit: 20,
       });
 
