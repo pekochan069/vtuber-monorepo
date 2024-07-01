@@ -1,7 +1,7 @@
-import { db } from "@repo/db";
-import { socials, vtubers, vtuberSocials } from "@repo/db/schema";
-import { generateId } from "@repo/utils/id";
 import { defineAction, z } from "astro:actions";
+import { db } from "@repo/db";
+import { socials, vtuberSocials, vtubers } from "@repo/db/schema";
+import { generateId } from "@repo/utils/id";
 
 export const createVtuber = defineAction({
   input: z.object({

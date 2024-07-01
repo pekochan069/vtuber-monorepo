@@ -9,8 +9,8 @@ if (user.role !== "admin") {
   return Astro.redirect("/dashboard");
 }
 
-import Layout from "~/layouts/Layout.astro";
 import { CreateUserForm } from "~/components/auth/create-user-form";
+import Layout from "~/layouts/Layout.astro";
 ---
 
 <Layout>

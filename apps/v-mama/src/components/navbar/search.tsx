@@ -1,23 +1,36 @@
+import { actions } from "astro:actions";
+import { useKeyDownEvent } from "@solid-primitives/keyboard";
+import { type Scheduled, debounce } from "@solid-primitives/scheduled";
+import { createForm } from "@tanstack/solid-form";
+import { Command as CommandPrimitive } from "cmdk-solid";
 import { TbSearch, TbX } from "solid-icons/tb";
-import { debounce, type Scheduled } from "@solid-primitives/scheduled";
 import {
+  For,
+  type JSX,
+  Show,
   createEffect,
   createResource,
   createSignal,
-  For,
   onCleanup,
   onMount,
-  Show,
   untrack,
-  type JSX,
 } from "solid-js";
-import { createForm } from "@tanstack/solid-form";
-import { actions } from "astro:actions";
-import { Command as CommandPrimitive } from "cmdk-solid";
-import { useKeyDownEvent } from "@solid-primitives/keyboard";
 
-import { FieldInfo, WithFieldInfo } from "../field-info";
+import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@repo/ui/command";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@repo/ui/dialog";
 import {
   Drawer,
   DrawerContent,
@@ -27,20 +40,7 @@ import {
 } from "@repo/ui/drawer";
 import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
 import { createStore, produce } from "solid-js/store";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@repo/ui/dialog";
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@repo/ui/command";
-import { Badge } from "@repo/ui/badge";
+import { FieldInfo, WithFieldInfo } from "../field-info";
 
 export function SearchDialog() {
   const [isDesktop, setIsDesktop] = createSignal(false);

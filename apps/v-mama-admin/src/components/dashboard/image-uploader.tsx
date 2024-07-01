@@ -1,13 +1,13 @@
+import { createDropzone } from "@solid-primitives/upload";
 import {
-  createResource,
-  createSignal,
   Match,
-  onMount,
   Show,
   Suspense,
   Switch,
+  createResource,
+  createSignal,
+  onMount,
 } from "solid-js";
-import { createDropzone } from "@solid-primitives/upload";
 import { Spinner, SpinnerType } from "solid-spinner";
 
 import { Button } from "@repo/ui/button";

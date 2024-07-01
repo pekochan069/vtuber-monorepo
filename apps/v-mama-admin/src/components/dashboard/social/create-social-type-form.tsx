@@ -1,19 +1,19 @@
-import { createForm } from "@tanstack/solid-form";
 import { actions } from "astro:actions";
+import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { createSignal, Match, Show, Switch } from "solid-js";
+import { Match, Show, Switch, createSignal } from "solid-js";
 import { Spinner, SpinnerType } from "solid-spinner";
 import { z } from "zod";
 
-import { prepareImages } from "~/lib/image";
-import { WithFieldInfo } from "~/components/field-info";
+import { Button } from "@repo/ui/button";
 import {
   TextField,
   TextFieldDescription,
   TextFieldLabel,
   TextFieldRoot,
 } from "@repo/ui/textfield";
-import { Button } from "@repo/ui/button";
+import { WithFieldInfo } from "~/components/field-info";
+import { prepareImages } from "~/lib/image";
 
 export function CreateSocialTypeForm() {
   const form = createForm(() => ({

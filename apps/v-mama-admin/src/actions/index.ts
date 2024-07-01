@@ -1,8 +1,8 @@
-import { createUser, login, logout } from "./auth";
 import { createAgency, getAgencies, queryAgencies } from "./agency";
+import { createUser, login, logout } from "./auth";
+import { handleImageUpload } from "./image-upload-handle";
 import { createSocialType, getSocialTypes } from "./social";
 import { createVtuber } from "./vtuber";
-import { handleImageUpload } from "./image-upload-handle";
 
 export const server = {
   authCreateUser: createUser,

@@ -1,23 +1,25 @@
+import { actions } from "astro:actions";
 import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { z } from "zod";
 import { Match, Show, Switch, batch, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
-import { actions } from "astro:actions";
 import { Spinner, SpinnerType } from "solid-spinner";
+import { z } from "zod";
 
+import type { Agency, SocialType } from "@repo/db/schema";
+import { Button } from "@repo/ui/button";
+import { Checkbox, CheckboxControl, CheckboxLabel } from "@repo/ui/checkbox";
+import { TextArea } from "@repo/ui/textarea";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { FieldInfo, WithFieldInfo } from "~/components/field-info";
+import { prepareImage } from "~/lib/image";
 import { DatePicker } from "../date-picker";
 import { ImageUploadDialog } from "../image-uploader";
 import { CreateSocial } from "../social/create-social";
-import { FieldInfo, WithFieldInfo } from "~/components/field-info";
-import { prepareImage } from "~/lib/image";
-import { Button } from "@repo/ui/button";
-import { TextArea } from "@repo/ui/textarea";
-import { Checkbox, CheckboxControl, CheckboxLabel } from "@repo/ui/checkbox";
-import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
-import type { SocialType } from "@repo/db/schema";
 
-export function CreateAgencyForm() {
+export function CreateAgencyForm(props: {
+  onCreateAgency?: (agency: { id: string; name: string }) => void;
+}) {
   const form = createForm(() => ({
     defaultValues: {
       name: "",
@@ -55,6 +57,10 @@ export function CreateAgencyForm() {
 
       if (res.ok) {
         setStatus("success");
+        props.onCreateAgency?.({
+          id: res.agencyId!,
+          name: value.name,
+        });
       } else {
         setStatus("failed");
       }

@@ -1,8 +1,8 @@
-import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 
-import * as schema from "./schema";
 import { env } from "@repo/env/web";
+import * as schema from "./schema";
 
 const client = createClient({
   authToken: env.DATABASE_TOKEN,

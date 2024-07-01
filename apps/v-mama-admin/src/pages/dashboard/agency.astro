@@ -5,10 +5,10 @@ if (!user) {
   return Astro.redirect("/");
 }
 
-import DashboardLayout from "~/layouts/DashboardLayout.astro";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 import { CreateAgencyForm } from "~/components/dashboard/agency/create-agency";
 import { QueryAgency } from "~/components/dashboard/agency/query-agency";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui/card";
+import DashboardLayout from "~/layouts/DashboardLayout.astro";
 ---
 
 <DashboardLayout>

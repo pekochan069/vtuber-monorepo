@@ -1,20 +1,20 @@
+import { actions } from "astro:actions";
 import { createForm } from "@tanstack/solid-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { batch, createSignal, Match, Show, Switch } from "solid-js";
-import { z } from "zod";
+import { Match, Show, Switch, batch, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Spinner, SpinnerType } from "solid-spinner";
-import { actions } from "astro:actions";
+import { z } from "zod";
 
-import { ImageUploadDialog } from "../image-uploader";
-import { CreateSocial } from "../social/create-social";
-import { WithFieldInfo } from "~/components/field-info";
-import { prepareImage } from "~/lib/image";
+import type { SocialType } from "@repo/db/schema";
 import { Button } from "@repo/ui/button";
-import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
 import { Checkbox, CheckboxControl, CheckboxLabel } from "@repo/ui/checkbox";
 import { TextArea } from "@repo/ui/textarea";
-import type { SocialType } from "@repo/db/schema";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { WithFieldInfo } from "~/components/field-info";
+import { prepareImage } from "~/lib/image";
+import { ImageUploadDialog } from "../image-uploader";
+import { CreateSocial } from "../social/create-social";
 
 export function CreateIllustratorForm() {
   const form = createForm(() => ({

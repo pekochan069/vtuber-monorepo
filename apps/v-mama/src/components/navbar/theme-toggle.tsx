@@ -1,10 +1,10 @@
+import { Button } from "@repo/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
-import { Button } from "@repo/ui/button";
 import { TbDeviceDesktop, TbMoon, TbSun } from "solid-icons/tb";
 
 export function ThemeToggle() {

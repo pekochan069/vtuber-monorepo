@@ -1,3 +1,3 @@
-export function CreatOutfit() {
+export function CreateOutfit() {
   return null;
 }

@@ -1,5 +1,5 @@
-import { lucia } from "@repo/auth/v-mama-admin";
 import { defineMiddleware } from "astro:middleware";
+import { lucia } from "@repo/auth/v-mama-admin";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const sessionId = context.cookies.get(lucia.sessionCookieName)?.value ?? null;

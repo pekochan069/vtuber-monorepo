@@ -1,7 +1,7 @@
 import { actions } from "astro:actions";
 import { TbPlus, TbX } from "solid-icons/tb";
-import { createResource, For, Match, Switch } from "solid-js";
-import { produce, type SetStoreFunction } from "solid-js/store";
+import { For, Match, Switch, createResource } from "solid-js";
+import { type SetStoreFunction, produce } from "solid-js/store";
 
 import type { SocialType } from "@repo/db/schema";
 import { Button } from "@repo/ui/button";

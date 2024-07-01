@@ -1,7 +1,7 @@
-import { db } from "@repo/db";
-import { illustrators, illustratorSocials, socials } from "@repo/db/schema";
-import { generateId } from "@repo/utils/id";
 import { defineAction, z } from "astro:actions";
+import { db } from "@repo/db";
+import { illustratorSocials, illustrators, socials } from "@repo/db/schema";
+import { generateId } from "@repo/utils/id";
 
 export const craeteIllustrator = defineAction({
   input: z.object({

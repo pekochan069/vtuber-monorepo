@@ -1,40 +1,55 @@
-import { createForm } from "@tanstack/solid-form";
 import { actions } from "astro:actions";
-import { z } from "zod";
+import { useKeyDownEvent } from "@solid-primitives/keyboard";
+import { debounce } from "@solid-primitives/scheduled";
+import { createForm } from "@tanstack/solid-form";
+import { zodValidator } from "@tanstack/zod-form-adapter";
 import {
-  batch,
-  createResource,
-  createSignal,
+  For,
   Match,
   Show,
   Switch,
+  batch,
+  createEffect,
+  createResource,
+  createSignal,
+  onCleanup,
+  onMount,
+  untrack,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Spinner, SpinnerType } from "solid-spinner";
+import { z } from "zod";
 
-import { ImageUploadDialog } from "../image-uploader";
-import { CreateSocial } from "../social/create-social";
-import { DatePicker } from "../date-picker";
-import { FieldInfo, WithFieldInfo } from "~/components/field-info";
 import type { SocialType } from "@repo/db/schema";
 import { Button } from "@repo/ui/button";
-import { prepareImage } from "~/lib/image";
 import { Checkbox, CheckboxControl, CheckboxLabel } from "@repo/ui/checkbox";
-import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@repo/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerLabel,
+  DrawerTrigger,
+} from "@repo/ui/drawer";
 import {
   RadioGroup,
   RadioGroupItem,
   RadioGroupItemLabel,
 } from "@repo/ui/radio-group";
 import { TextArea } from "@repo/ui/textarea";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxTrigger,
-} from "@repo/ui/combobox";
+import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { FieldInfo, WithFieldInfo } from "~/components/field-info";
+import { prepareImage } from "~/lib/image";
+import { CreateAgencyForm } from "../agency/create-agency";
+import { DatePicker } from "../date-picker";
+import { ImageUploadDialog } from "../image-uploader";
+import { CreateSocial } from "../social/create-social";
 
 const MAX_ICON_HEIGHT = 256;
 
@@ -95,18 +110,6 @@ export function CreateVtuberForm() {
       name: string;
     }[],
   );
-
-  const [agencies] = createResource(actions.getAgencies);
-  const agencyOptions = () => {
-    if (agencies()) {
-      return agencies()!.map((v) => ({
-        value: v.id,
-        label: v.name,
-      }));
-    }
-
-    return [];
-  };
 
   const [status, setStatus] = createSignal<"idle" | "success" | "failed">(
     "idle",
@@ -243,34 +246,28 @@ export function CreateVtuberForm() {
             onChange: z.string().min(1, "Agency is required"),
           }}
         >
-          {(field) => (
-            <WithFieldInfo field={field()}>
-              <div class="space-y-2">
-                <label class="text-sm font-medium">소속</label>
-                <Combobox
-                  name={field().name}
-                  options={agencyOptions()}
-                  optionValue="value"
-                  optionTextValue="label"
-                  optionLabel="label"
-                  onChange={(value) => field().handleChange(value.value)}
-                  itemComponent={(props) => (
-                    <ComboboxItem
-                      item={props.item}
-                      value={props.item.rawValue.value}
-                    >
-                      {props.item.rawValue.label}
-                    </ComboboxItem>
-                  )}
-                >
-                  <ComboboxTrigger>
-                    <ComboboxInput />
-                  </ComboboxTrigger>
-                  <ComboboxContent />
-                </Combobox>
-              </div>
-            </WithFieldInfo>
-          )}
+          {(field) => {
+            const [agencyInput, setAgencyInput] = createSignal("");
+            return (
+              <WithFieldInfo field={field()}>
+                <div class="space-y-2">
+                  <label class="text-sm font-medium">소속</label>
+                  <SelectAgency
+                    onSelect={(agency) => {
+                      field().handleChange(agency.id);
+                    }}
+                    setInput={agencyInput()}
+                  />
+                  <CreateAgencyModal
+                    onCreateAgency={(agency) => {
+                      field().handleChange(agency.id);
+                      setAgencyInput(agency.name);
+                    }}
+                  />
+                </div>
+              </WithFieldInfo>
+            );
+          }}
         </form.Field>
         <form.Field name="gender">
           {(field) => (
@@ -490,5 +487,217 @@ export function CreateVtuberForm() {
         </Switch>
       </div>
     </form>
+  );
+}
+
+export async function queryAgencies(query: string) {
+  if (query === "") {
+    return [];
+  }
+
+  return await actions.queryAgencies(query);
+}
+
+function SelectAgency(props: {
+  onSelect: (agency: { id: string; name: string }) => void;
+  setInput: string;
+}) {
+  let ref: HTMLDivElement | undefined;
+  let inputRef: HTMLInputElement | undefined;
+
+  const [open, setOpen] = createSignal(false);
+
+  const [query, setQuery] = createSignal("");
+  const [agencies] = createResource(query, queryAgencies);
+
+  const [useTrigger, setUseTrigger] = createSignal(true);
+  const trigger = debounce((value: string) => setQuery(value), 200);
+  const [input, setInput] = createSignal("");
+
+  const [focusIndex, setFocusIndex] = createSignal(0);
+
+  const keyDownEvent = useKeyDownEvent();
+
+  function clickOutside(e: MouseEvent) {
+    if (
+      ref &&
+      !ref.contains(e.target as Node) &&
+      inputRef &&
+      !inputRef.contains(e.target as Node)
+    ) {
+      setOpen(false);
+    }
+  }
+
+  onMount(() => {
+    document.addEventListener("mousedown", clickOutside);
+  });
+
+  onCleanup(() => {
+    document.removeEventListener("mousedown", clickOutside);
+  });
+
+  createEffect(() => {
+    if (input() !== "" && input().length > 1) {
+      trigger(input());
+    }
+  });
+
+  createEffect(() => {
+    if (props.setInput === "") {
+      return;
+    }
+
+    setUseTrigger(false);
+    setInput(props.setInput);
+  });
+
+  createEffect(() => {
+    if (!open()) return;
+
+    const e = keyDownEvent();
+
+    untrack(() => {
+      if (!e) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (agencies() && agencies()!.length > 0) {
+          setFocusIndex((index) =>
+            index + 1 < agencies()!.length ? index + 1 : index,
+          );
+        }
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setFocusIndex((index) => (index - 1 >= 0 ? index - 1 : index));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (agencies() && agencies()!.length > 0) {
+          setUseTrigger(false);
+          setInput(agencies()![focusIndex()].name);
+          props.onSelect(agencies()![focusIndex()]);
+        }
+      }
+    });
+  });
+
+  createEffect(() => {
+    if (useTrigger()) {
+      trigger(input());
+    }
+  });
+
+  return (
+    <div ref={ref}>
+      <TextFieldRoot
+        value={input()}
+        onChange={(value) => {
+          if (useTrigger() === false) {
+            setUseTrigger(true);
+          }
+          setInput(value);
+        }}
+      >
+        <TextField
+          ref={inputRef}
+          autocomplete="off"
+          onBlur={() => setOpen(false)}
+          onFocus={() => setOpen(true)}
+        />
+      </TextFieldRoot>
+      <div class="relative mt-2">
+        <Show when={open() && agencies()}>
+          {(agencyList) => (
+            <Show when={agencyList().length > 0}>
+              <div class="bg-popover text-popover-foreground animate-in absolute top-0 z-10 w-full rounded-md border p-1 shadow-md outline-none">
+                <ul>
+                  <For each={agencyList()}>
+                    {(agency, i) => (
+                      <div
+                        class="aria-selected:bg-accent aria-selected:text-accent-foreground relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                        aria-selected={focusIndex() === i()}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setUseTrigger(false);
+                          setInput(agency.name);
+                          props.onSelect(agency);
+                        }}
+                        onMouseEnter={() => setFocusIndex(i())}
+                      >
+                        {agency.name}
+                      </div>
+                    )}
+                  </For>
+                </ul>
+              </div>
+            </Show>
+          )}
+        </Show>
+      </div>
+    </div>
+  );
+}
+
+function CreateAgencyModal(props: {
+  onCreateAgency: (agency: { id: string; name: string }) => void;
+}) {
+  const [isDesktop, setIsDesktop] = createSignal(false);
+
+  onMount(() => {
+    setIsDesktop(window.innerWidth > 768);
+  });
+
+  return (
+    <Show
+      when={isDesktop()}
+      fallback={<CreateAgencyMobile onCreateAgency={props.onCreateAgency} />}
+    >
+      <CreateAgencyDesktop onCreateAgency={props.onCreateAgency} />
+    </Show>
+  );
+}
+
+function CreateAgencyMobile(props: {
+  onCreateAgency: (agency: { id: string; name: string }) => void;
+}) {
+  const [open, setOpen] = createSignal(false);
+  return (
+    <Drawer open={open()} onOpenChange={setOpen}>
+      <DrawerTrigger as={Button} variant="secondary" class="w-full">
+        <div>새로운 소속사 생성</div>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div class="mx-auto h-[60svh] w-full max-w-3xl overflow-auto">
+          <DrawerHeader>
+            <DrawerLabel>소속사 생성</DrawerLabel>
+          </DrawerHeader>
+          <div class="p-4">
+            <CreateAgencyForm onCreateAgency={props.onCreateAgency} />
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+function CreateAgencyDesktop(props: {
+  onCreateAgency: (agency: { id: string; name: string }) => void;
+}) {
+  const [open, setOpen] = createSignal(false);
+  return (
+    <Dialog open={open()} onOpenChange={setOpen}>
+      <DialogTrigger as={Button} variant="secondary" class="w-full">
+        <div>새로운 소속사 생성</div>
+      </DialogTrigger>
+      <DialogContent class="max-h-[80svh] max-w-3xl overflow-auto">
+        <DialogHeader>
+          <DialogTitle>소속사 생성</DialogTitle>
+        </DialogHeader>
+        <div class="p-4">
+          <CreateAgencyForm onCreateAgency={props.onCreateAgency} />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

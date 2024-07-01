@@ -5,9 +5,9 @@ if (!user) {
   return Astro.redirect("/");
 }
 
-import DashboardLayout from "~/layouts/DashboardLayout.astro";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
 import { CreateVtuberForm } from "~/components/dashboard/vtuber/create-vtuber";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui/card";
+import DashboardLayout from "~/layouts/DashboardLayout.astro";
 ---
 
 <DashboardLayout>

@@ -1,28 +1,28 @@
 import { actions } from "astro:actions";
 import {
-  createResource,
-  createSignal,
-  createEffect,
-  Suspense,
-  For,
-  onCleanup,
-  onMount,
-  Switch,
-  Match,
-  untrack,
-  batch,
-  Show,
-} from "solid-js";
-import { debounce } from "@solid-primitives/scheduled";
-import {
   useCurrentlyHeldKey,
   useKeyDownEvent,
 } from "@solid-primitives/keyboard";
-import { Spinner, SpinnerType } from "solid-spinner";
+import { debounce } from "@solid-primitives/scheduled";
 import { TbSearch } from "solid-icons/tb";
+import {
+  For,
+  Match,
+  Show,
+  Suspense,
+  Switch,
+  batch,
+  createEffect,
+  createResource,
+  createSignal,
+  onCleanup,
+  onMount,
+  untrack,
+} from "solid-js";
+import { Spinner, SpinnerType } from "solid-spinner";
 
-import { TextField, TextFieldRoot } from "@repo/ui/textfield";
 import type { Agency } from "@repo/db/schema";
+import { TextField, TextFieldRoot } from "@repo/ui/textfield";
 
 async function getAgencies(searchTerm: string) {
   if (searchTerm.length < 3) return [];

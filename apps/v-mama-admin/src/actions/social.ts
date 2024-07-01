@@ -1,7 +1,7 @@
-import { db } from "@repo/db";
-import { socials, socialTypes } from "@repo/db/schema";
-import { generateId } from "@repo/utils/id";
 import { defineAction, z } from "astro:actions";
+import { db } from "@repo/db";
+import { socialTypes, socials } from "@repo/db/schema";
+import { generateId } from "@repo/utils/id";
 import { handleImageUpload } from "./image-upload-handle";
 
 export const createSocialType = defineAction({

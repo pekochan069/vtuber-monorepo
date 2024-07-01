@@ -1,5 +1,5 @@
-import { agencies, agencySocials, socials, type Agency } from "@repo/db/schema";
 import { defineAction, z } from "astro:actions";
+import { type Agency, agencies, agencySocials, socials } from "@repo/db/schema";
 
 import { db } from "@repo/db";
 import { generateId } from "@repo/utils/id";
@@ -68,15 +68,15 @@ export const createAgency = defineAction({
           })),
         );
       });
+      return {
+        ok: true,
+        agencyId: id,
+      };
     } catch {
       return {
         ok: false,
       };
     }
-
-    return {
-      ok: true,
-    };
   },
 });
 
@@ -107,7 +107,7 @@ export const queryAgencies = defineAction({
 
       return res;
     } catch {
-      return [] as Agency[];
+      return [];
     }
   },
 });
