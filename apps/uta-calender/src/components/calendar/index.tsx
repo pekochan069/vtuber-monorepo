@@ -7,6 +7,7 @@ import {
 import { Index, Show, createEffect, createSignal, onMount } from "solid-js";
 
 import { CalendarCell } from "./calendar-cell";
+import { CalendarContent } from "./calendar-contents";
 import { CalendarController } from "./calendar-controller";
 
 const today = new Date();
@@ -69,66 +70,69 @@ export function Calendar(props: { defaultMonth: number; defaultYear: number }) {
   });
 
   return (
-    <DatePicker.Root
-      open
-      closeOnSelect={false}
-      locale="ko-KR"
-      timeZone="Asia/Seoul"
-      defaultValue={[selectedDate().toString()]}
-    >
-      <DatePicker.Context>
-        {(context) => (
-          <>
-            <DatePicker.View view="day">
-              <CalendarController
-                currentMonth={month()}
-                setMonth={setMonth}
-                currentYear={year()}
-                setYear={setYear}
-              />
+    <div class="3xl:grid-cols-3 grid gap-4 lg:grid-cols-2">
+      <DatePicker.Root
+        open
+        closeOnSelect={false}
+        locale="ko-KR"
+        timeZone="Asia/Seoul"
+        defaultValue={[selectedDate().toString()]}
+      >
+        <DatePicker.Context>
+          {(context) => (
+            <>
+              <DatePicker.View view="day" class="space-y-4">
+                <CalendarController
+                  currentMonth={month()}
+                  setMonth={setMonth}
+                  currentYear={year()}
+                  setYear={setYear}
+                />
 
-              <DatePicker.Table>
-                <DatePicker.TableHead>
-                  <DatePicker.TableRow>
-                    <Index each={context().weekDays}>
-                      {(weekDay) => (
-                        <DatePicker.TableHeader>
-                          {weekDay().short}
-                        </DatePicker.TableHeader>
+                <DatePicker.Table class="w-full">
+                  <DatePicker.TableHead>
+                    <DatePicker.TableRow>
+                      <Index each={context().weekDays}>
+                        {(weekDay) => (
+                          <DatePicker.TableHeader>
+                            {weekDay().short}
+                          </DatePicker.TableHeader>
+                        )}
+                      </Index>
+                    </DatePicker.TableRow>
+                  </DatePicker.TableHead>
+
+                  <DatePicker.TableBody class="!w-full">
+                    <Index each={context().weeks}>
+                      {(week) => (
+                        <DatePicker.TableRow>
+                          <Index each={week()}>
+                            {(day) => (
+                              <Show
+                                when={day().month === month()}
+                                fallback={<td />}
+                              >
+                                <CalendarCell
+                                  date={day()}
+                                  onClick={(date) => {
+                                    setSelectedDate(date);
+                                  }}
+                                  isSelected={isEqualDay(day(), selectedDate())}
+                                />
+                              </Show>
+                            )}
+                          </Index>
+                        </DatePicker.TableRow>
                       )}
                     </Index>
-                  </DatePicker.TableRow>
-                </DatePicker.TableHead>
-
-                <DatePicker.TableBody>
-                  <Index each={context().weeks}>
-                    {(week) => (
-                      <DatePicker.TableRow>
-                        <Index each={week()}>
-                          {(day) => (
-                            <Show
-                              when={day().month === month()}
-                              fallback={<td />}
-                            >
-                              <CalendarCell
-                                date={day()}
-                                onClick={(date) => {
-                                  setSelectedDate(date);
-                                }}
-                                isSelected={isEqualDay(day(), selectedDate())}
-                              />
-                            </Show>
-                          )}
-                        </Index>
-                      </DatePicker.TableRow>
-                    )}
-                  </Index>
-                </DatePicker.TableBody>
-              </DatePicker.Table>
-            </DatePicker.View>
-          </>
-        )}
-      </DatePicker.Context>
-    </DatePicker.Root>
+                  </DatePicker.TableBody>
+                </DatePicker.Table>
+              </DatePicker.View>
+            </>
+          )}
+        </DatePicker.Context>
+      </DatePicker.Root>
+      <CalendarContent selectedDate={selectedDate()} />
+    </div>
   );
 }

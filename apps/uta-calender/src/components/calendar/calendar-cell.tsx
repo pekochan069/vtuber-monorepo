@@ -18,7 +18,7 @@ export function CalendarCell(props: {
   return (
     <DatePicker.TableCell value={props.date} class="relative px-0.5 py-0.5">
       <DatePicker.TableCellTrigger
-        class="ring-ring group size-16 rounded-md outline-none ring-offset-0 hover:ring-2"
+        class="ring-ring group aspect-square w-full rounded-md outline-none ring-offset-0 hover:ring-2"
         onClick={() => {
           props.onClick(props.date as CalendarDate);
         }}
