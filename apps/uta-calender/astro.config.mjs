@@ -6,15 +6,12 @@ import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [solidJs(), tailwind({
-    applyBaseStyles: false
-  })],
-  security: {
-    checkOrigin: true
-  },
-  experimental: {
-    actions: true
-  },
+  integrations: [
+    solidJs(),
+    tailwind({
+      applyBaseStyles: false,
+    }),
+  ],
   output: "server",
-  adapter: vercel()
+  adapter: vercel(),
 });
