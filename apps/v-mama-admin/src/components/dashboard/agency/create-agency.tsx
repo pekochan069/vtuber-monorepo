@@ -50,6 +50,14 @@ export function CreateAgencyForm(props: {
         value.kr = value.name;
       }
 
+      await fetch(logoImage()!.presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": logoImage()!.image.type,
+        },
+        body: logoImage()!.image,
+      });
+
       const res = await actions.createAgency({
         ...value,
         socialList: transformedSocials,
@@ -67,7 +75,6 @@ export function CreateAgencyForm(props: {
     },
     validatorAdapter: zodValidator(),
   }));
-  const [baseUrl, setBaseUrl] = createSignal<string>("");
   const [usePlaceholder, setUsePlaceholder] = createSignal(false);
   const [status, setStatus] = createSignal<"idle" | "success" | "failed">(
     "idle",
@@ -80,6 +87,12 @@ export function CreateAgencyForm(props: {
       name: string;
     }[],
   );
+
+  const [logoImage, setLogoImage] = createSignal<{
+    image: Blob;
+    id: string;
+    presignedUrl: string;
+  } | null>(null);
 
   return (
     <form
@@ -263,31 +276,16 @@ export function CreateAgencyForm(props: {
         >
           {(field) => (
             <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
-              <TextFieldRoot
-                value={field().state.value}
-                onChange={(value) => field().handleChange(value)}
-              >
-                <TextFieldLabel>아이콘 ID</TextFieldLabel>
-                <TextField
-                  onBlur={field().handleBlur}
-                  name={field().name}
-                  id={field().name}
-                  disabled={usePlaceholder()}
-                  placeholder="이미 이미지를 업로드했을 경우에만 직접 ID를 입력하세요"
-                />
-              </TextFieldRoot>
               <ImageUploadDialog
-                onUpload={(image, baseUrl) => {
-                  batch(() => {
-                    setBaseUrl(() => baseUrl);
-                    setUsePlaceholder(false);
-                    field().handleChange(baseUrl);
-                  });
-                }}
                 processImage={(file) => prepareImage(file, 128)}
                 uploadHandler={(image) =>
                   actions.handleImageUpload({ image, prefix: "agency" })
                 }
+                setUploadImage={(uploadImage) => {
+                  setUsePlaceholder(false);
+                  setLogoImage(uploadImage);
+                  field().handleChange(uploadImage.id);
+                }}
                 maxHeight={128}
               />
               <div>
@@ -298,8 +296,6 @@ export function CreateAgencyForm(props: {
                     batch(() => {
                       if (value === true) {
                         field().handleChange("placeholder");
-                      } else {
-                        field().handleChange(baseUrl());
                       }
 
                       setUsePlaceholder(value);
@@ -310,15 +306,15 @@ export function CreateAgencyForm(props: {
                   <CheckboxLabel>Use Placeholder</CheckboxLabel>
                 </Checkbox>
               </div>
-              <Show
-                when={usePlaceholder() === false && field().state.value !== ""}
-              >
-                <img
-                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/agency/${field().state.value}.png`}
-                  alt="icon"
-                  height={128}
-                  class="mx-auto mt-4 rounded-md shadow-md"
-                />
+              <Show when={usePlaceholder() === false && logoImage()}>
+                {(image) => (
+                  <img
+                    src={URL.createObjectURL(image().image)}
+                    alt="icon"
+                    height={128}
+                    class="mx-auto mt-4 rounded-md shadow-md"
+                  />
+                )}
               </Show>
               <Show when={usePlaceholder() === true}>
                 <img

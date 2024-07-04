@@ -4,7 +4,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
         "quickfix.biome": "explicit",
-        "source.organizeImports.biome": "explicit",
+        "source.organizeImports.biome": "explicit"
     },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -14,5 +14,5 @@
     },
     "[astro]": {
         "editor.defaultFormatter": "astro-build.astro-vscode"
-    }
+    },
 }

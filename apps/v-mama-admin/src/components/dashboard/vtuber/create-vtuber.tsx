@@ -42,8 +42,18 @@ import {
   RadioGroupItem,
   RadioGroupItemLabel,
 } from "@repo/ui/radio-group";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/ui/table";
 import { TextArea } from "@repo/ui/textarea";
 import { TextField, TextFieldLabel, TextFieldRoot } from "@repo/ui/textfield";
+import { TbPlus } from "solid-icons/tb";
 import { FieldInfo, WithFieldInfo } from "~/components/field-info";
 import { prepareImage } from "~/lib/image";
 import { CreateAgencyForm } from "../agency/create-agency";
@@ -87,6 +97,14 @@ export function CreateVtuberForm() {
         value.kr = value.name;
       }
 
+      await fetch(iconImage()!.presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": iconImage()!.image.type,
+        },
+        body: iconImage()!.image,
+      });
+
       const res = await actions.createVtuber({
         ...value,
         socialList: transformedSocials,
@@ -101,7 +119,6 @@ export function CreateVtuberForm() {
     validatorAdapter: zodValidator(),
   }));
 
-  const [baseUrl, setBaseUrl] = createSignal<string>("");
   const [usePlaceholder, setUsePlaceholder] = createSignal<boolean>(false);
   const [socials, setSocials] = createStore(
     [] as {
@@ -110,6 +127,12 @@ export function CreateVtuberForm() {
       name: string;
     }[],
   );
+
+  const [iconImage, setIconImage] = createSignal<{
+    image: Blob;
+    id: string;
+    presignedUrl: string;
+  } | null>(null);
 
   const [status, setStatus] = createSignal<"idle" | "success" | "failed">(
     "idle",
@@ -363,31 +386,16 @@ export function CreateVtuberForm() {
         >
           {(field) => (
             <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
-              <TextFieldRoot
-                value={field().state.value}
-                onChange={(value) => field().handleChange(value)}
-              >
-                <TextFieldLabel>아이콘 ID</TextFieldLabel>
-                <TextField
-                  onBlur={field().handleBlur}
-                  name={field().name}
-                  id={field().name}
-                  disabled={usePlaceholder()}
-                  placeholder="이미 이미지를 업로드했을 경우에만 직접 ID를 입력하세요"
-                />
-              </TextFieldRoot>
               <ImageUploadDialog
-                onUpload={(image, baseUrl) => {
-                  batch(() => {
-                    setBaseUrl(() => baseUrl);
-                    setUsePlaceholder(false);
-                    field().handleChange(baseUrl);
-                  });
-                }}
                 processImage={(file) => prepareImage(file, MAX_ICON_HEIGHT)}
                 uploadHandler={(image) =>
                   actions.handleImageUpload({ image, prefix: "vtuber" })
                 }
+                setUploadImage={(uploadImage) => {
+                  setUsePlaceholder(false);
+                  field().handleChange(uploadImage.id);
+                  setIconImage(() => uploadImage);
+                }}
                 maxHeight={MAX_ICON_HEIGHT}
               />
               <div>
@@ -398,8 +406,6 @@ export function CreateVtuberForm() {
                     batch(() => {
                       if (value === true) {
                         field().handleChange("placeholder");
-                      } else {
-                        field().handleChange(baseUrl());
                       }
 
                       setUsePlaceholder(value);
@@ -410,14 +416,16 @@ export function CreateVtuberForm() {
                   <CheckboxLabel>Use Placeholder</CheckboxLabel>
                 </Checkbox>
               </div>
-              <Show when={usePlaceholder() === false && field().state.value}>
-                <img
-                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/vtuber/${field().state.value}.png`}
-                  alt="icon"
-                  width={128}
-                  height={128}
-                  class="mx-auto mt-4 rounded-md shadow-md"
-                />
+              <Show when={usePlaceholder() === false && iconImage()}>
+                {(image) => (
+                  <img
+                    src={URL.createObjectURL(image().image)}
+                    alt="icon"
+                    width={128}
+                    height={128}
+                    class="mx-auto mt-4 rounded-md shadow-md"
+                  />
+                )}
               </Show>
               <Show when={usePlaceholder() === true}>
                 <img
@@ -434,6 +442,7 @@ export function CreateVtuberForm() {
         <div>
           <CreateSocial socials={socials} onChange={setSocials} />
         </div>
+
         <form.Field name="retired">
           {(field) => (
             <Checkbox

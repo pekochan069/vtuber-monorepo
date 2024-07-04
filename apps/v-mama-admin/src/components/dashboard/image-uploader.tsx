@@ -27,12 +27,16 @@ import {
 } from "@repo/ui/drawer";
 
 export function ImageUploadDialog(props: {
-  onUpload: (image: Blob, baseUrl: string) => void;
   processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
   }) => Promise<{ id: string; presignedUrl: string }>;
+  setUploadImage: (image: {
+    image: Blob;
+    id: string;
+    presignedUrl: string;
+  }) => void;
   maxHeight: number;
 }) {
   const [isDesktop, setIsDesktop] = createSignal(false);
@@ -54,12 +58,16 @@ export function ImageUploadDialog(props: {
 }
 
 function DesktopUploader(props: {
-  onUpload: (image: Blob, baseUrl: string) => void;
   processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
   }) => Promise<{ id: string; presignedUrl: string }>;
+  setUploadImage: (image: {
+    image: Blob;
+    id: string;
+    presignedUrl: string;
+  }) => void;
   maxHeight: number;
 }) {
   const [open, setOpen] = createSignal(false);
@@ -74,12 +82,12 @@ function DesktopUploader(props: {
         </DialogHeader>
         <div class="py-4">
           <ImageUploader
-            onUpload={(image, baseUrl) => {
-              props.onUpload(image, baseUrl);
-              setOpen(false);
-            }}
             processImage={props.processImage}
             uploadHandler={props.uploadHandler}
+            setUploadImage={(image) => {
+              setOpen(false);
+              props.setUploadImage(image);
+            }}
             maxHeight={props.maxHeight}
           />
         </div>
@@ -89,12 +97,16 @@ function DesktopUploader(props: {
 }
 
 function MobileUploader(props: {
-  onUpload: (image: Blob, baseUrl: string) => void;
   processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
   }) => Promise<{ id: string; presignedUrl: string }>;
+  setUploadImage: (image: {
+    image: Blob;
+    id: string;
+    presignedUrl: string;
+  }) => void;
   maxHeight: number;
 }) {
   const [open, setOpen] = createSignal(false);
@@ -110,12 +122,12 @@ function MobileUploader(props: {
           </DrawerHeader>
           <div class="py-4">
             <ImageUploader
-              onUpload={(image, baseUrl) => {
-                props.onUpload(image, baseUrl);
-                setOpen(false);
-              }}
               processImage={props.processImage}
               uploadHandler={props.uploadHandler}
+              setUploadImage={(image) => {
+                setOpen(false);
+                props.setUploadImage(image);
+              }}
               maxHeight={props.maxHeight}
             />
           </div>
@@ -126,12 +138,16 @@ function MobileUploader(props: {
 }
 
 function ImageUploader(props: {
-  onUpload: (image: Blob, baseUrl: string) => void;
   processImage: (file: File) => Promise<Blob>;
   uploadHandler: (image: {
     size: number;
     type: string;
   }) => Promise<{ id: string; presignedUrl: string }>;
+  setUploadImage: (image: {
+    image: Blob;
+    id: string;
+    presignedUrl: string;
+  }) => void;
   maxHeight: number;
 }) {
   const [file, setFile] = createSignal<File | null>(null);
@@ -214,20 +230,27 @@ function ImageUploader(props: {
             setIsUploading(true);
             props
               .uploadHandler(upload)
-              .then(async (res) => {
-                await fetch(res.presignedUrl, {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "image/png",
-                  },
-                  body: temp,
-                });
-                props.onUpload(image()!, res.id);
+              .then((res) => {
+                props.setUploadImage({ image: temp, ...res });
                 setIsUploading(false);
               })
               .catch((err) => {
                 console.error(err);
               });
+            // .then(async (res) => {
+            //   await fetch(res.presignedUrl, {
+            //     method: "PUT",
+            //     headers: {
+            //       "Content-Type": "image/png",
+            //     },
+            //     body: temp,
+            //   });
+            //   props.onUpload(image()!, res.id);
+            //   setIsUploading(false);
+            // })
+            // .catch((err) => {
+            //   console.error(err);
+            // });
           }}
         >
           <Show when={isUploading()} fallback="Upload">

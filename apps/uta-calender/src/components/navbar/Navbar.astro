@@ -1,0 +1,14 @@
+---
+import { ThemeToggle } from "./theme-toggle";
+---
+
+<header class="fixed left-0 top-0 z-50 w-full border-b backdrop-blur-lg">
+  <div class="container mx-auto flex justify-between px-6 py-4">
+    <nav>
+      <a class="text-2xl font-bold" href="/">Uta Calender</a>
+    </nav>
+    <div>
+      <ThemeToggle client:only="solid-js" />
+    </div>
+  </div>
+</header>

@@ -1,0 +1,52 @@
+---
+import { db } from "@repo/db";
+import { calenderView } from "@repo/db/schema";
+import { like } from "drizzle-orm";
+import Layout from "../layouts/Layout.astro";
+
+const url = Astro.url;
+
+const m = Number(url.searchParams.get("m")) || new Date().getMonth() + 1;
+const mString = m.toString().padStart(2, "0");
+
+const res = await db
+  .select()
+  .from(calenderView)
+  .where(like(calenderView.date, `${mString}-%`));
+---
+
+<Layout>
+  <form method="get" id="change-month-form">
+    <label for="m">달</label>
+    <select name="m" id="m">
+      <option value="1">1월</option>
+      <option value="2">2월</option>
+      <option value="3">3월</option>
+      <option value="4">4월</option>
+      <option value="5">5월</option>
+      <option value="6">6월</option>
+      <option value="7">7월</option>
+      <option value="8">8월</option>
+      <option value="9">9월</option>
+      <option value="10">10월</option>
+      <option value="11">11월</option>
+      <option value="12">12월</option>
+    </select>
+  </form>
+  <div class="flex flex-wrap gap-4">
+    {
+      res.map((r) => (
+        <div class="flex flex-col items-start">
+          <div>{r.kr}</div>
+          <div>{r.date}</div>
+          <div>{r.icon}</div>
+        </div>
+      ))
+    }
+  </div>
+</Layout>
+<script>
+  const form = document.getElementById("change-month-form");
+
+  form?.addEventListener("submit", (e) => {});
+</script>

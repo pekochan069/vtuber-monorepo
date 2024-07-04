@@ -16,6 +16,8 @@ import { prepareImage } from "~/lib/image";
 import { ImageUploadDialog } from "../image-uploader";
 import { CreateSocial } from "../social/create-social";
 
+const MAX_ICON_HEIGHT = 256;
+
 export function CreateIllustratorForm() {
   const form = createForm(() => ({
     defaultValues: {
@@ -28,13 +30,45 @@ export function CreateIllustratorForm() {
       website: "",
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      const transformedSocials = socials.map((social) => ({
+        type: social.type.id,
+        handle: social.handle,
+        name: social.name === "" ? social.type.name : social.name,
+      }));
+
+      if (value.jp === "") {
+        value.jp = value.name;
+      }
+      if (value.en === "") {
+        value.en = value.name;
+      }
+      if (value.kr === "") {
+        value.kr = value.name;
+      }
+
+      await fetch(iconImage()!.presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": iconImage()!.image.type,
+        },
+        body: iconImage()!.image,
+      });
+
+      const res = await actions.createIllustrator({
+        ...value,
+        socialList: transformedSocials,
+      });
+
+      if (res.ok) {
+        setStatus("success");
+      } else {
+        setStatus("failed");
+      }
     },
     validatorAdapter: zodValidator(),
   }));
 
   const [usePlaceholder, setUsePlaceholder] = createSignal(false);
-  const [baseUrl, setBaseUrl] = createSignal<string>("");
 
   const [socials, setSocials] = createStore(
     [] as {
@@ -43,6 +77,12 @@ export function CreateIllustratorForm() {
       name: string;
     }[],
   );
+
+  const [iconImage, setIconImage] = createSignal<{
+    image: Blob;
+    id: string;
+    presignedUrl: string;
+  } | null>(null);
 
   const [status, setStatus] = createSignal<"idle" | "success" | "failed">(
     "idle",
@@ -217,32 +257,17 @@ export function CreateIllustratorForm() {
         >
           {(field) => (
             <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
-              <TextFieldRoot
-                value={field().state.value}
-                onChange={(value) => field().handleChange(value)}
-              >
-                <TextFieldLabel>아이콘 ID</TextFieldLabel>
-                <TextField
-                  onBlur={field().handleBlur}
-                  name={field().name}
-                  id={field().name}
-                  disabled={usePlaceholder()}
-                  placeholder="이미 이미지를 업로드했을 경우에만 직접 ID를 입력하세요"
-                />
-              </TextFieldRoot>
               <ImageUploadDialog
-                onUpload={(image, baseUrl) => {
-                  batch(() => {
-                    setBaseUrl(() => baseUrl);
-                    setUsePlaceholder(false);
-                    field().handleChange(baseUrl);
-                  });
-                }}
-                processImage={(file) => prepareImage(file, 128)}
+                processImage={(file) => prepareImage(file, MAX_ICON_HEIGHT)}
                 uploadHandler={(image) =>
                   actions.handleImageUpload({ image, prefix: "illustrator" })
                 }
-                maxHeight={128}
+                setUploadImage={(image) => {
+                  setUsePlaceholder(false);
+                  setIconImage(image);
+                  field().handleChange(image.id);
+                }}
+                maxHeight={MAX_ICON_HEIGHT}
               />
               <div>
                 <Checkbox
@@ -252,8 +277,6 @@ export function CreateIllustratorForm() {
                     batch(() => {
                       if (value === true) {
                         field().handleChange("placeholder");
-                      } else {
-                        field().handleChange(baseUrl());
                       }
 
                       setUsePlaceholder(value);
@@ -264,14 +287,16 @@ export function CreateIllustratorForm() {
                   <CheckboxLabel>Use Placeholder</CheckboxLabel>
                 </Checkbox>
               </div>
-              <Show when={usePlaceholder() === false && field().state.value}>
-                <img
-                  src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/illustrator/${field().state.value}.png`}
-                  alt="icon"
-                  width={128}
-                  height={128}
-                  class="mx-auto mt-4 rounded-md shadow-md"
-                />
+              <Show when={usePlaceholder() === false && iconImage()}>
+                {(image) => (
+                  <img
+                    src={URL.createObjectURL(image().image)}
+                    alt="icon"
+                    width={128}
+                    height={128}
+                    class="mx-auto mt-4 rounded-md shadow-md"
+                  />
+                )}
               </Show>
               <Show when={usePlaceholder() === true}>
                 <img

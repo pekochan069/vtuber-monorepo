@@ -24,6 +24,7 @@ export const vtubers = vtuberBuilder(
     birthday: integer("birthday", { mode: "timestamp" }),
     website: text("website"),
     icon: text("icon").notNull(),
+    smallIcon: text("small_icon").notNull(),
     agencyId: text("agency_id")
       .notNull()
       .references(() => agencies.id),

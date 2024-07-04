@@ -6,12 +6,13 @@ if (!user) {
 }
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
+import { CreateOutfitForm } from "~/components/dashboard/vtuber/create-outfit";
 import { CreateVtuberForm } from "~/components/dashboard/vtuber/create-vtuber";
 import DashboardLayout from "~/layouts/DashboardLayout.astro";
 ---
 
 <DashboardLayout>
-  <div class="mt-8 grid gap-4 md:gap-6 2xl:grid-cols-2">
+  <div상상 class="mt-8 grid gap-4 md:gap-6 2xl:grid-cols-2">
     <Card class="w-full">
       <CardHeader>
         <CardTitle class="text-2xl">버튜버 생성</CardTitle>
@@ -21,5 +22,14 @@ import DashboardLayout from "~/layouts/DashboardLayout.astro";
         <CreateVtuberForm client:only="solid-js" />
       </CardContent>
     </Card>
-  </div>
+    <Card class="w-full">
+      <CardHeader>
+        <CardTitle class="text-2xl">의상 생성</CardTitle>
+        <CardDescription class="text-sm">새로운 의상 생성</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <CreateOutfitForm client:only="solid-js" />
+      </CardContent>
+    </Card>
+  </div상상>
 </DashboardLayout>

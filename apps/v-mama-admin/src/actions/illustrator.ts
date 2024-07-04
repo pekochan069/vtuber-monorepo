@@ -3,7 +3,7 @@ import { db } from "@repo/db";
 import { illustratorSocials, illustrators, socials } from "@repo/db/schema";
 import { generateId } from "@repo/utils/id";
 
-export const craeteIllustrator = defineAction({
+export const createIllustrator = defineAction({
   input: z.object({
     name: z.string(),
     jp: z.string(),
@@ -62,6 +62,26 @@ export const craeteIllustrator = defineAction({
       return {
         ok: false,
       };
+    }
+  },
+});
+
+export const queryIllustrators = defineAction({
+  input: z.string(),
+  handler: async (query) => {
+    try {
+      return await db.query.illustrators.findMany({
+        where: (illustrator, { or, like }) =>
+          or(
+            like(illustrator.name, query),
+            like(illustrator.jp, query),
+            like(illustrator.en, query),
+            like(illustrator.kr, query),
+          ),
+        limit: 10,
+      });
+    } catch {
+      return [];
     }
   },
 });
