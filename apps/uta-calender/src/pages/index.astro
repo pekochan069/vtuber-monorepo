@@ -3,90 +3,52 @@ import { like } from "drizzle-orm";
 
 import { db } from "@repo/db";
 import { calenderView } from "@repo/db/schema";
+// import { Calender } from "~/components/calender";
+import { Calendar } from "~/components/calendar";
 import ArrowBigLeft from "~/components/icons/tb/ArrowBigLeft.astro";
 import ArrowBigRight from "~/components/icons/tb/ArrowBigRight.astro";
 import Layout from "../layouts/Layout.astro";
 
 const url = Astro.url;
 
-const m = Number(url.searchParams.get("m")) || new Date().getMonth() + 1;
-const mString = m.toString().padStart(2, "0");
+let m = Number(url.searchParams.get("m"));
 
-const res = await db
-  .select()
-  .from(calenderView)
-  .where(like(calenderView.date, `${mString}-%`));
+if (!m || m < 1 || m > 12) {
+  m = new Date().getMonth() + 1;
+}
+
+let y = Number(url.searchParams.get("y"));
+
+if (!y || y < 1) {
+  y = new Date().getFullYear();
+}
 ---
 
 <Layout>
-  <div class="px-6 py-4">
-    <div class="mt-4 flex justify-center gap-4">
-      <button
-        class="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow transition-[color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[1.5px] disabled:pointer-events-none disabled:opacity-50"
-        id="prev-month"
-        disabled={m === 1}
-      >
-        <ArrowBigLeft />
-      </button>
-      <select
-        id="select-month"
-        class="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow transition-[color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[1.5px] disabled:pointer-events-none disabled:opacity-50"
-      >
-        {
-          Array.from({ length: 12 }, (_, i) => i + 1).map((i) => (
-            <option value={i} selected={i === m}>
-              {i}월
-            </option>
-          ))
-        }
-      </select>
-      <button
-        class="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow transition-[color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[1.5px] disabled:pointer-events-none disabled:opacity-50"
-        id="next-month"
-        disabled={m === 12}
-      >
-        <ArrowBigRight />
-      </button>
-    </div>
-    <div class="flex flex-wrap gap-4">
-      {
-        res.map((r) => (
-          <div class="flex flex-col items-start">
-            <div>{r.kr}</div>
-            <div>{r.date}</div>
-            <div>{r.icon}</div>
-          </div>
-        ))
-      }
-    </div>
+  <div>
+    <Calendar defaultMonth={m} defaultYear={y} client:only="solid-js" />
   </div>
 </Layout>
-<script>
-  const prevMonth = document.getElementById("prev-month");
-  const nextMonth = document.getElementById("next-month");
-  const selectMonth = document.getElementById("select-month") as HTMLSelectElement;
+<script is:inline>
+  (() => {
+    let oldPushState = history.pushState;
+    history.pushState = function pushState() {
+      let ret = oldPushState.apply(this, arguments);
+      window.dispatchEvent(new Event("pushstate"));
+      window.dispatchEvent(new Event("locationchange"));
+      return ret;
+    };
 
-  prevMonth?.addEventListener("click", () => {
-    const m = Number(new URLSearchParams(location.search).get("m")) || new Date().getMonth() + 1;
-    const prevM = m - 1;
-    const url = new URL(location.href);
-    url.searchParams.set("m", `${prevM}`);
-    location.href = url.toString();
-  });
+    let oldReplaceState = history.replaceState;
+    history.replaceState = function replaceState() {
+      let ret = oldReplaceState.apply(this, arguments);
+      window.dispatchEvent(new Event("replacestate"));
+      window.dispatchEvent(new Event("locationchange"));
+      return ret;
+    };
 
-  nextMonth?.addEventListener("click", () => {
-    const m = Number(new URLSearchParams(location.search).get("m")) || new Date().getMonth() + 1;
-    const nextM = m + 1;
-    const url = new URL(location.href);
-    url.searchParams.set("m", `${nextM}`);
-    location.href = url.toString();
-  });
-
-  selectMonth?.addEventListener("change", (e) => {
-    const m = Number((e.target as HTMLSelectElement).value);
-    const url = new URL(location.href);
-    url.searchParams.set("m", `${m}`);
-
-    location.href = url.toString();
-  });
+    window.addEventListener("popstate", () => {
+      window.dispatchEvent(new Event("locationchange"));
+    });
+  })();
 </script>
