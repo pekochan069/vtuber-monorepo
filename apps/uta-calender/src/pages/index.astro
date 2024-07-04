@@ -1,7 +1,10 @@
 ---
+import { like } from "drizzle-orm";
+
 import { db } from "@repo/db";
 import { calenderView } from "@repo/db/schema";
-import { like } from "drizzle-orm";
+import ArrowBigLeft from "~/components/icons/tb/ArrowBigLeft.astro";
+import ArrowBigRight from "~/components/icons/tb/ArrowBigRight.astro";
 import Layout from "../layouts/Layout.astro";
 
 const url = Astro.url;
@@ -16,37 +19,74 @@ const res = await db
 ---
 
 <Layout>
-  <form method="get" id="change-month-form">
-    <label for="m">달</label>
-    <select name="m" id="m">
-      <option value="1">1월</option>
-      <option value="2">2월</option>
-      <option value="3">3월</option>
-      <option value="4">4월</option>
-      <option value="5">5월</option>
-      <option value="6">6월</option>
-      <option value="7">7월</option>
-      <option value="8">8월</option>
-      <option value="9">9월</option>
-      <option value="10">10월</option>
-      <option value="11">11월</option>
-      <option value="12">12월</option>
-    </select>
-  </form>
-  <div class="flex flex-wrap gap-4">
-    {
-      res.map((r) => (
-        <div class="flex flex-col items-start">
-          <div>{r.kr}</div>
-          <div>{r.date}</div>
-          <div>{r.icon}</div>
-        </div>
-      ))
-    }
+  <div class="px-6 py-4">
+    <div class="mt-4 flex justify-center gap-4">
+      <button
+        class="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow transition-[color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[1.5px] disabled:pointer-events-none disabled:opacity-50"
+        id="prev-month"
+        disabled={m === 1}
+      >
+        <ArrowBigLeft />
+      </button>
+      <select
+        id="select-month"
+        class="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow transition-[color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[1.5px] disabled:pointer-events-none disabled:opacity-50"
+      >
+        {
+          Array.from({ length: 12 }, (_, i) => i + 1).map((i) => (
+            <option value={i} selected={i === m}>
+              {i}월
+            </option>
+          ))
+        }
+      </select>
+      <button
+        class="focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow transition-[color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[1.5px] disabled:pointer-events-none disabled:opacity-50"
+        id="next-month"
+        disabled={m === 12}
+      >
+        <ArrowBigRight />
+      </button>
+    </div>
+    <div class="flex flex-wrap gap-4">
+      {
+        res.map((r) => (
+          <div class="flex flex-col items-start">
+            <div>{r.kr}</div>
+            <div>{r.date}</div>
+            <div>{r.icon}</div>
+          </div>
+        ))
+      }
+    </div>
   </div>
 </Layout>
 <script>
-  const form = document.getElementById("change-month-form");
+  const prevMonth = document.getElementById("prev-month");
+  const nextMonth = document.getElementById("next-month");
+  const selectMonth = document.getElementById("select-month") as HTMLSelectElement;
 
-  form?.addEventListener("submit", (e) => {});
+  prevMonth?.addEventListener("click", () => {
+    const m = Number(new URLSearchParams(location.search).get("m")) || new Date().getMonth() + 1;
+    const prevM = m - 1;
+    const url = new URL(location.href);
+    url.searchParams.set("m", `${prevM}`);
+    location.href = url.toString();
+  });
+
+  nextMonth?.addEventListener("click", () => {
+    const m = Number(new URLSearchParams(location.search).get("m")) || new Date().getMonth() + 1;
+    const nextM = m + 1;
+    const url = new URL(location.href);
+    url.searchParams.set("m", `${nextM}`);
+    location.href = url.toString();
+  });
+
+  selectMonth?.addEventListener("change", (e) => {
+    const m = Number((e.target as HTMLSelectElement).value);
+    const url = new URL(location.href);
+    url.searchParams.set("m", `${m}`);
+
+    location.href = url.toString();
+  });
 </script>
