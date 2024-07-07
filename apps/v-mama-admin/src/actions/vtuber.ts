@@ -17,6 +17,7 @@ export const createVtuber = defineAction({
     gender: z.string(),
     birthday: z.string(),
     icon: z.string(),
+    smallIcon: z.string(),
     agencyId: z.string(),
     socialList: z.array(
       z.object({ type: z.string(), handle: z.string(), name: z.string() }),
@@ -35,6 +36,7 @@ export const createVtuber = defineAction({
     gender,
     birthday,
     icon,
+    smallIcon,
     agencyId,
     socialList,
   }) => {
@@ -65,6 +67,7 @@ export const createVtuber = defineAction({
           gender,
           birthday: birthdayDate,
           icon,
+          smallIcon,
           agencyId,
         });
         await tx.insert(socials).values(socialUpload);

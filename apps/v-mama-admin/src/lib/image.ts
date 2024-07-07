@@ -103,3 +103,13 @@ export function prepareImage(file: File, maxHeight: number): Promise<Blob> {
     };
   });
 }
+
+export function base64ToFile(base64: string) {
+  const byteString = atob(base64.split(",")[1]);
+  const mimeString = base64.split(",")[0].split(":")[1].split(";")[0];
+  const ia = new Uint8Array(byteString.length).map((_, i) =>
+    byteString.charCodeAt(i),
+  );
+
+  return new Blob([ia], { type: mimeString });
+}

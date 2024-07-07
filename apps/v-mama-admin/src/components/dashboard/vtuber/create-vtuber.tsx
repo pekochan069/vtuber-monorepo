@@ -78,6 +78,7 @@ export function CreateVtuberForm() {
       birthday: new Date().toISOString().split("T")[0],
       website: "",
       icon: "",
+      smallIcon: "",
       agencyId: "",
     },
     onSubmit: async ({ value }) => {
@@ -97,20 +98,35 @@ export function CreateVtuberForm() {
         value.kr = value.name;
       }
 
-      await fetch(iconImage()!.presignedUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": iconImage()!.image.type,
-        },
-        body: iconImage()!.image,
-      });
+      const res = await Promise.all([
+        actions.createVtuber({
+          ...value,
+          socialList: transformedSocials,
+        }),
+        fetch(iconImage()!.presignedUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": iconImage()!.image.type,
+          },
+          body: iconImage()!.image,
+        }),
+      ]);
+      // const res = await actions.createVtuber({
+      //   ...value,
+      //   socialList: transformedSocials,
+      // // });
 
-      const res = await actions.createVtuber({
-        ...value,
-        socialList: transformedSocials,
-      });
+      // if (res[0].ok) {
+      //   await fetch(iconImage()!.presignedUrl, {
+      //     method: "PUT",
+      //     headers: {
+      //       "Content-Type": iconImage()!.image.type,
+      //     },
+      //     body: iconImage()!.image,
+      //   });
+      // }
 
-      if (res.ok) {
+      if (res[0].ok) {
         setStatus("success");
       } else {
         setStatus("failed");
@@ -433,6 +449,68 @@ export function CreateVtuberForm() {
                   alt="placeholder"
                   width={128}
                   height={128}
+                  class="mx-auto mt-4 rounded-md shadow-md"
+                />
+              </Show>
+            </WithFieldInfo>
+          )}
+        </form.Field>
+        <form.Field
+          name="smallIcon"
+          validators={{
+            onChange: z.string().min(1, "Icon is required"),
+          }}
+        >
+          {(field) => (
+            <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
+              <ImageUploadDialog
+                processImage={(file) => prepareImage(file, 64)}
+                uploadHandler={(image) =>
+                  actions.handleImageUpload({ image, prefix: "vtuber" })
+                }
+                setUploadImage={(uploadImage) => {
+                  setUsePlaceholder(false);
+                  field().handleChange(uploadImage.id);
+                  setIconImage(() => uploadImage);
+                }}
+                maxHeight={64}
+                defaultOpen="get-social-icon"
+              />
+              <div>
+                <Checkbox
+                  class="flex items-center gap-2"
+                  value={`${usePlaceholder()}`}
+                  onChange={(value) => {
+                    batch(() => {
+                      if (value === true) {
+                        field().handleChange("placeholder");
+                      }
+
+                      setUsePlaceholder(value);
+                    });
+                  }}
+                >
+                  <CheckboxControl />
+                  <CheckboxLabel>Use Placeholder</CheckboxLabel>
+                </Checkbox>
+              </div>
+              <Show when={usePlaceholder() === false && iconImage()}>
+                {(image) => (
+                  <img
+                    src={URL.createObjectURL(image().image)}
+                    alt="icon"
+                    width={64}
+                    height={64}
+                    class="mx-auto mt-4 rounded-md shadow-md"
+                  />
+                )}
+              </Show>
+              <Show when={usePlaceholder() === true}>
+                <img
+                  src="https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/placeholder-128.png"
+                  alt="placeholder"
+                  width={64}
+                  height={64}
                   class="mx-auto mt-4 rounded-md shadow-md"
                 />
               </Show>

@@ -18,6 +18,7 @@ export const env = createEnv({
     R2_S3_ENDPOINT: z.string().min(1),
     R2_ACCOUNT_ID: z.string().min(1),
     R2_BUCKET_NAME: z.string().min(1),
+    YOUTUBE_API_KEY: z.string().min(1),
   },
   client: {},
   // @ts-ignore vite runtime env

@@ -46,20 +46,21 @@ export function CreateIllustratorForm() {
         value.kr = value.name;
       }
 
-      await fetch(iconImage()!.presignedUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": iconImage()!.image.type,
-        },
-        body: iconImage()!.image,
-      });
+      const res = await Promise.all([
+        actions.createIllustrator({
+          ...value,
+          socialList: transformedSocials,
+        }),
+        fetch(iconImage()!.presignedUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": iconImage()!.image.type,
+          },
+          body: iconImage()!.image,
+        }),
+      ]);
 
-      const res = await actions.createIllustrator({
-        ...value,
-        socialList: transformedSocials,
-      });
-
-      if (res.ok) {
+      if (res[0].ok) {
         setStatus("success");
       } else {
         setStatus("failed");

@@ -50,23 +50,37 @@ export function CreateAgencyForm(props: {
         value.kr = value.name;
       }
 
-      await fetch(logoImage()!.presignedUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": logoImage()!.image.type,
-        },
-        body: logoImage()!.image,
-      });
+      // await fetch(logoImage()!.presignedUrl, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": logoImage()!.image.type,
+      //   },
+      //   body: logoImage()!.image,
+      // });
 
-      const res = await actions.createAgency({
-        ...value,
-        socialList: transformedSocials,
-      });
+      // const res = await actions.createAgency({
+      //   ...value,
+      //   socialList: transformedSocials,
+      // });
 
-      if (res.ok) {
+      const res = await Promise.all([
+        actions.createAgency({
+          ...value,
+          socialList: transformedSocials,
+        }),
+        fetch(logoImage()!.presignedUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": logoImage()!.image.type,
+          },
+          body: logoImage()!.image,
+        }),
+      ]);
+
+      if (res[0].ok) {
         setStatus("success");
         props.onCreateAgency?.({
-          id: res.agencyId!,
+          id: res[0].agencyId!,
           name: value.name,
         });
       } else {
