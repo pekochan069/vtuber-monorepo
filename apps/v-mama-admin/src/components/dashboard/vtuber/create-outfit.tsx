@@ -230,12 +230,12 @@ function OutfitModal(props: {
   const trigger = debounce((value: string) => setIllustratorQuery(value), 200);
   const [illustrators] = createResource(illustratorQuery, queryIllustrators);
 
-  const [outfit, setOutfit] = createStore<{
-    name: string;
-    illustratorId: string;
-    image: Blob;
-    presignedUrl: string;
-  }>({});
+  // const [outfit, setOutfit] = createStore<{
+  //   name: string;
+  //   illustratorId: string;
+  //   image: Blob;
+  //   presignedUrl: string;
+  // }>({});
 
   createEffect(() => {
     trigger(illustratorInput());
