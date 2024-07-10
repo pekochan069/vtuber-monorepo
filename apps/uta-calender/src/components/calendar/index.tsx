@@ -6,6 +6,7 @@ import {
 } from "@internationalized/date";
 import { Index, Show, createEffect, createSignal, onMount } from "solid-js";
 
+import { Separator } from "@repo/ui/separator";
 import { CalendarCell } from "./calendar-cell";
 import { CalendarContent } from "./calendar-contents";
 import { CalendarController } from "./calendar-controller";
