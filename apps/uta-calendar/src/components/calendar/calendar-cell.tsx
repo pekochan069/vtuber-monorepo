@@ -33,7 +33,7 @@ export function CalendarCell(props: {
           {props.date.day}
           <Show when={isDateToday}>
             <div
-              class="bg-primary aria-selected:bg-primary-foreground absolute bottom-4 left-1/2 size-1.5 -translate-x-1/2 translate-y-1/2 transform rounded-full"
+              class="bg-primary aria-selected:bg-primary-foreground absolute bottom-2.5 left-1/2 size-1.5 -translate-x-1/2 translate-y-1/2 transform rounded-full sm:bottom-4 md:bottom-4"
               aria-selected={props.isSelected}
             />
           </Show>
