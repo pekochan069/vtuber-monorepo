@@ -1,0 +1,50 @@
+---
+const user = Astro.locals.user;
+
+if (!user) {
+  return Astro.redirect("/");
+}
+
+import { db } from "@repo/db";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
+import { CreateOutfitForm } from "~/components/dashboard/vtuber/create-outfit";
+import { UpdateVtuberForm } from "~/components/dashboard/vtuber/update-vtuber";
+import DashboardLayout from "~/layouts/DashboardLayout.astro";
+
+const { id } = Astro.params;
+
+if (id === undefined) {
+  return Astro.redirect("/dashboard/vtuber");
+}
+
+const vtuber = await db.query.vtubers.findFirst({
+  where: (vtuber, { eq }) => eq(vtuber.id, id),
+});
+
+if (!vtuber) {
+  return Astro.redirect("/dashboard/vtuber");
+}
+---
+
+<DashboardLayout>
+  <div class="mt-8 grid gap-4 md:gap-6 2xl:grid-cols-2">
+    <Card class="w-full">
+      <CardHeader>
+        <CardTitle class="text-2xl">버튜버 정보 수정</CardTitle>
+        <CardDescription class="text-sm">기존 버튜버의 정보를 수정</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <UpdateVtuberForm vtuber={vtuber} client:only="solid-js" />
+      </CardContent>
+    </Card>
+    <Card class="w-full">
+      <CardHeader>
+        <CardTitle class="text-2xl">의상 정보 수정</CardTitle>
+        <CardDescription class="text-sm">기존 버튜버의 의상 정보를 수정</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <CreateOutfitForm client:only="solid-js" />
+      </CardContent>
+    </Card>
+  </div>
+</DashboardLayout>

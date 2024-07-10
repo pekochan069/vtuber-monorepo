@@ -4,7 +4,7 @@ import { createIllustrator, queryIllustrators } from "./illustrator";
 import { handleImageUpload } from "./image-upload-handle";
 import { getYoutubeIcon } from "./image-worker";
 import { createSocialType, getSocialTypes } from "./social";
-import { createVtuber } from "./vtuber";
+import { createVtuber, queryVtubers } from "./vtuber";
 
 export const server = {
   authCreateUser: createUser,
@@ -16,6 +16,7 @@ export const server = {
   createSocialType,
   getSocialTypes,
   createVtuber,
+  queryVtubers,
   handleImageUpload,
   createIllustrator,
   queryIllustrators,

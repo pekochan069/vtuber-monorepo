@@ -89,3 +89,29 @@ export const createVtuber = defineAction({
     };
   },
 });
+
+export const queryVtubers = defineAction({
+  input: z.string(),
+  handler: async (query) => {
+    try {
+      if (query === "") {
+        return [];
+      }
+
+      const res = await db.query.vtubers.findMany({
+        where: (vtuber, { or, like }) =>
+          or(
+            like(vtuber.name, `%${query}%`),
+            like(vtuber.jp, `%${query}%`),
+            like(vtuber.en, `%${query}%`),
+            like(vtuber.kr, `%${query}%`),
+          ),
+        limit: 20,
+      });
+
+      return res;
+    } catch {
+      return [];
+    }
+  },
+});

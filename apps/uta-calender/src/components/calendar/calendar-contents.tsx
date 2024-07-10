@@ -31,6 +31,8 @@ export function CalendarContent(props: { selectedDate: CalendarDate }) {
                         <img
                           src={`https://pub-2d4e6c51bc9a44eeaffec2d6fadf51e9.r2.dev/vtuber/vtuber/${e.icon}.png`}
                           alt="vtuber icon"
+                          width={128}
+                          height={128}
                         />
                         <div class="flex flex-col">
                           <div>{e.type === "d" ? "데뷔" : "생일"}</div>

@@ -6,6 +6,7 @@ if (!user) {
 }
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/card";
+import { EditVtuber } from "~/components/dashboard/vtuber/edit-vtuber";
 import { CreateOutfitForm } from "~/components/dashboard/vtuber/create-outfit";
 import { CreateVtuberForm } from "~/components/dashboard/vtuber/create-vtuber";
 import DashboardLayout from "~/layouts/DashboardLayout.astro";
@@ -29,6 +30,14 @@ import DashboardLayout from "~/layouts/DashboardLayout.astro";
       </CardHeader>
       <CardContent>
         <CreateOutfitForm client:only="solid-js" />
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle class="text-2xl">버튜버 검색</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <EditVtuber client:only="solid-js" />
       </CardContent>
     </Card>
   </div>

@@ -8,36 +8,21 @@ export function DashboardTabs() {
   const [defaultValue, setDefaultValue] = createSignal<undefined | string>();
 
   onMount(() => {
-    const path = window.location.pathname.split("/").pop();
+    const path = window.location.pathname.split("/")[2];
 
-    const local = localStorage.getItem("dashboard-tab");
-
-    if (local) {
-      setDefaultValue(local);
-
-      let url = `/dashboard/${local}`;
-      if (local === "home") {
-        url = "/dashboard";
-      }
-
-      window.history.pushState({}, "", url);
-    } else {
-      if (path === "vtuber" || path === "agency" || path === "illustrator") {
-        setDefaultValue(path);
-      }
+    if (path === "vtuber" || path === "agency" || path === "illustrator") {
+      setDefaultValue(path);
     }
   });
 
   return (
     <Tabs value={defaultValue()} ref={tabsRef}>
-      <TabsList class="">
+      <TabsList class="grid grid-cols-4 sm:block">
         <TabsTrigger
           as="a"
           href="/dashboard"
           value="home"
-          onClick={() => {
-            localStorage.setItem("dashboard-tab", "home");
-          }}
+          onClick={(e) => e.preventDefault()}
         >
           Home
         </TabsTrigger>
@@ -45,9 +30,7 @@ export function DashboardTabs() {
           as="a"
           href="/dashboard/vtuber"
           value="vtuber"
-          onClick={() => {
-            localStorage.setItem("dashboard-tab", "vtuber");
-          }}
+          onClick={(e) => e.preventDefault()}
         >
           Vtuber
         </TabsTrigger>
@@ -55,9 +38,7 @@ export function DashboardTabs() {
           as="a"
           href="/dashboard/agency"
           value="agency"
-          onClick={() => {
-            localStorage.setItem("dashboard-tab", "agency");
-          }}
+          onClick={(e) => e.preventDefault()}
         >
           Agency
         </TabsTrigger>
@@ -65,9 +46,7 @@ export function DashboardTabs() {
           as="a"
           href="/dashboard/illustrator"
           value="illustrator"
-          onClick={() => {
-            localStorage.setItem("dashboard-tab", "illustrator");
-          }}
+          onClick={(e) => e.preventDefault()}
         >
           Illustrator
         </TabsTrigger>

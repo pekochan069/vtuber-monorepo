@@ -61,6 +61,7 @@ import { DatePicker } from "../date-picker";
 import { ImageUploadDialog } from "../image-uploader";
 import { CreateSocial } from "../social/create-social";
 
+const SMALL_ICON_SIZE = 128;
 const MAX_ICON_HEIGHT = 256;
 
 export function CreateVtuberForm() {
@@ -111,20 +112,6 @@ export function CreateVtuberForm() {
           body: iconImage()!.image,
         }),
       ]);
-      // const res = await actions.createVtuber({
-      //   ...value,
-      //   socialList: transformedSocials,
-      // // });
-
-      // if (res[0].ok) {
-      //   await fetch(iconImage()!.presignedUrl, {
-      //     method: "PUT",
-      //     headers: {
-      //       "Content-Type": iconImage()!.image.type,
-      //     },
-      //     body: iconImage()!.image,
-      //   });
-      // }
 
       if (res[0].ok) {
         setStatus("success");
@@ -402,6 +389,7 @@ export function CreateVtuberForm() {
         >
           {(field) => (
             <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
+              <div>메인 이미지</div>
               <ImageUploadDialog
                 processImage={(file) => prepareImage(file, MAX_ICON_HEIGHT)}
                 uploadHandler={(image) =>
@@ -463,8 +451,9 @@ export function CreateVtuberForm() {
         >
           {(field) => (
             <WithFieldInfo field={field()} class="relative flex flex-col gap-2">
+              <div>작은 아이콘</div>
               <ImageUploadDialog
-                processImage={(file) => prepareImage(file, 64)}
+                processImage={(file) => prepareImage(file, SMALL_ICON_SIZE)}
                 uploadHandler={(image) =>
                   actions.handleImageUpload({ image, prefix: "vtuber" })
                 }
@@ -473,7 +462,7 @@ export function CreateVtuberForm() {
                   field().handleChange(uploadImage.id);
                   setIconImage(() => uploadImage);
                 }}
-                maxHeight={64}
+                maxHeight={SMALL_ICON_SIZE}
                 defaultOpen="get-social-icon"
               />
               <div>
