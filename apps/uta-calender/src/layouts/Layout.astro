@@ -21,9 +21,11 @@ const { title = "Uta Calender" } = Astro.props;
     <title>{title}</title>
   </head>
   <body data-cloak>
-    <Navbar transition:name="navbar" />
-    <div class="mt-[69px]">
-      <slot />
+    <div class="flex min-h-svh flex-col">
+      <Navbar transition:name="navbar" />
+      <div class="container mt-[69px] grid flex-1 px-6 py-4">
+        <slot />
+      </div>
     </div>
     <script is:inline>
       document.addEventListener("astro:page-load", () => {

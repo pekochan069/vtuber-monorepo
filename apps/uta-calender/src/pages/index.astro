@@ -25,9 +25,7 @@ if (!y || y < 1) {
 ---
 
 <Layout>
-  <div class="container px-6 py-4">
-    <Calendar defaultMonth={m} defaultYear={y} client:only="solid-js" />
-  </div>
+  <Calendar defaultMonth={m} defaultYear={y} client:only="solid-js" />
 </Layout>
 <script is:inline>
   (() => {

@@ -12,7 +12,6 @@ import { CalendarContent } from "./calendar-contents";
 import { CalendarController } from "./calendar-controller";
 
 const today = new Date();
-today.setHours(today.getHours() + 9);
 const CURRENT_YEAR = today.getFullYear();
 const CURRENT_MONTH = today.getMonth() + 1;
 const CURRENT_DAY = today.getDate();
@@ -71,7 +70,7 @@ export function Calendar(props: { defaultMonth: number; defaultYear: number }) {
   });
 
   return (
-    <div class="3xl:grid-cols-3 grid gap-4 lg:grid-cols-2">
+    <div class="space-y-6 lg:grid lg:grid-cols-[1fr,1px,1fr] lg:gap-4">
       <DatePicker.Root
         open
         closeOnSelect={false}
@@ -133,6 +132,7 @@ export function Calendar(props: { defaultMonth: number; defaultYear: number }) {
           )}
         </DatePicker.Context>
       </DatePicker.Root>
+      <Separator orientation="vertical" class="hidden lg:block" />
       <CalendarContent selectedDate={selectedDate()} />
     </div>
   );
