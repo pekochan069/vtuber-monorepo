@@ -16,7 +16,7 @@ export function CalendarContent(props: { selectedDate: CalendarDate }) {
 
   const fetcher = (month: number) => actions.queryCalender(month);
   const [cachedFetcher, invalidate] = makeCache(fetcher);
-  const [events, { refetch }] = createResource(month, fetcher);
+  const [events, { refetch }] = createResource(month, cachedFetcher);
 
   return (
     <div>
@@ -59,7 +59,8 @@ export function CalendarContent(props: { selectedDate: CalendarDate }) {
               const eventOnSelectedDate = () =>
                 eventList().filter(
                   (e) =>
-                    e.date.slice(3, 5) === props.selectedDate.day.toString(),
+                    e.date.slice(3, 5) ===
+                    props.selectedDate.day.toString().padStart(2, "0"),
                 );
               const grouped = () =>
                 Object.groupBy(eventOnSelectedDate(), (e) => e.type);
